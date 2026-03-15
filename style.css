@@ -374,7 +374,7 @@ ul { list-style: none; }
 .hero-bg-planet {
   position: absolute;
   inset: 0;
-  background-image: url('planeta.jpg'); /* cambia aquí la imagen de fondo del hero */
+  background-image: url('fondos/PlanetaOscuro.jpg'); /* cambia aquí la imagen de fondo del hero */
   background-size: cover;
   background-position: center 30%;
   opacity: 0.18;
@@ -889,7 +889,7 @@ ul { list-style: none; }
 .download-bg {
   position: absolute;
   inset: 0;
-  background-image: url('fondo_planeta.jpg');
+  background-image: url('fondos/FondoPlaneta.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.08;
@@ -1174,4 +1174,594 @@ ul { list-style: none; }
 
   /* Footer bottom apilado */
   .footer-bottom { flex-direction: column; text-align: center; }
+}
+
+
+/* ================================================================
+   ADICIÓN: BOTÓN DE MÚSICA EN EL NAVBAR
+   El botón #musicToggle aparece a la derecha del menú.
+   La clase .music-on se añade por JS cuando la música está activa.
+================================================================ */
+
+/* Botón de toggle de música */
+.music-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  transition: var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.music-btn:hover {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+/* Estado activo: music on → color naranja pulsante */
+.music-btn.music-on {
+  color: var(--orange);
+  border-color: var(--orange);
+  box-shadow: 0 0 12px var(--orange-glow);
+  animation: music-pulse 2s ease-in-out infinite;
+}
+@keyframes music-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--orange-glow); }
+  50%       { box-shadow: 0 0 20px var(--orange-glow), 0 0 40px var(--orange-glow); }
+}
+/* Icono de nota musical dentro del botón */
+.music-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+
+/* ================================================================
+   ADICIÓN: NAVE DECORATIVA EN EL HERO
+   La nave (nave/Nave.png) flota en la parte inferior del hero.
+   Usa image-rendering: pixelated para preservar el pixel art.
+================================================================ */
+
+/* Contenedor de la nave decorativa */
+.hero-ship {
+  position: absolute;
+  bottom: 8%;           /* Distancia desde el borde inferior del hero */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none; /* No interfiere con clicks */
+  animation: ship-float 4s ease-in-out infinite; /* Flotación vertical */
+  filter: drop-shadow(0 0 16px var(--orange-glow)) drop-shadow(0 0 32px var(--cyan-glow));
+}
+/* Imagen de la nave */
+.hero-ship img {
+  width: clamp(60px, 8vw, 100px);  /* Tamaño responsive — cambia 100px para hacer la nave más grande */
+  height: auto;
+  image-rendering: pixelated;       /* Preserva el pixel art sin difuminar */
+  image-rendering: crisp-edges;
+}
+/* Animación de flotación suave */
+@keyframes ship-float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-14px); }
+}
+
+
+/* ================================================================
+   ADICIÓN: BALAS DECORATIVAS EN EL HERO (bala.gif)
+   Tres balas animadas cruzan el fondo del hero de izquierda a derecha.
+   Cada .bala-N tiene posición vertical y velocidad distintas.
+   Para añadir más balas: añade .bala-4 con un nuevo @keyframes.
+   Para quitarlas: elimina los .hero-bala en el HTML.
+================================================================ */
+
+/* Base compartida de cada bala */
+.hero-bala {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;             /* Empieza invisible; la animación la hace visible */
+}
+/* Imagen del gif de bala */
+.hero-bala img {
+  width: clamp(12px, 2vw, 20px); /* Tamaño de la bala — ajusta aquí */
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* Bala 1: parte baja, velocidad media */
+.bala-1 {
+  top: 65%;
+  animation: bala-fly 6s linear 0s infinite;
+}
+/* Bala 2: parte media, más rápida */
+.bala-2 {
+  top: 40%;
+  animation: bala-fly 4s linear 1.5s infinite;
+}
+/* Bala 3: parte alta, lenta */
+.bala-3 {
+  top: 25%;
+  animation: bala-fly 8s linear 3s infinite;
+}
+/* Animación: vuela de izquierda a derecha desapareciendo al final */
+@keyframes bala-fly {
+  0%   { left: -5%; opacity: 0.7; }
+  90%  { opacity: 0.7; }
+  100% { left: 105%; opacity: 0; }
+}
+
+
+/* ================================================================
+   ADICIÓN: SWAP DE EXPRESIÓN EN LOS SPRITES DE PERSONAJES
+   Cada .sprite-img-wrap contiene DOS imágenes:
+     .sprite-normal → visible por defecto
+     .sprite-hover  → visible al hacer hover en la tarjeta
+
+   Para cambiar la imagen de hover de un personaje:
+   edita el src de .sprite-hover en el HTML del personaje correspondiente.
+================================================================ */
+
+/* Las dos imágenes se apilan usando position: absolute */
+.sprite-img-wrap {
+  position: relative; /* Contexto para el apilamiento */
+}
+.sprite-img-wrap .sprite-normal,
+.sprite-img-wrap .sprite-hover {
+  position: absolute;  /* Apiladas en el mismo espacio */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* contain en lugar de cover para sprites con fondo transparente */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transition: opacity 0.3s ease; /* Fundido suave entre expresiones */
+}
+/* Estado por defecto */
+.sprite-normal { opacity: 1; }
+.sprite-hover  { opacity: 0; }
+/* Al hacer hover en la tarjeta: intercambia las opacidades */
+.sprite-card:hover .sprite-normal { opacity: 0; }
+.sprite-card:hover .sprite-hover  { opacity: 1; }
+
+/* ================================================================
+   GALERÍA — NUEVA ESTRUCTURA POR BLOQUES
+   .gallery-block        → contenedor de cada subsección (personaje o escenario)
+   .gallery-block-boss   → variante roja para Zaroth
+   .gallery-subtitle     → título de cada bloque con icono + etiqueta
+   .char-photos-grid     → grid de fotos de un personaje (4 cols → 2 → 1)
+   .char-photo-item      → celda individual: imagen + etiqueta
+   .char-photo-wrap      → contenedor de imagen con aspect-ratio fijo
+   .char-lore-card       → celda de texto descriptivo del personaje
+================================================================ */
+
+/* Bloque de sección dentro de la galería */
+.gallery-block {
+  max-width: 1280px;
+  margin: 0 auto 4rem;
+  padding: 0 clamp(1rem, 5vw, 4rem);
+  position: relative;
+  z-index: 1;
+}
+
+/* Línea de acento lateral izquierda para cada bloque */
+.gallery-block::before {
+  content: '';
+  position: absolute;
+  left: clamp(0rem, 2vw, 1rem);
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--orange), transparent);
+  opacity: 0.3;
+  border-radius: 1px;
+}
+
+/* Bloque especial para Zaroth: acento lateral rojo */
+.gallery-block-boss::before {
+  background: linear-gradient(to bottom, var(--red), transparent);
+}
+.gallery-block-boss .gallery-subtitle { color: rgba(255,200,200,0.9); }
+
+/* Título de cada bloque de galería */
+.gallery-subtitle {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+  color: var(--text);
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+/* Icono coloreado (◈) delante del título */
+.gallery-subtitle-icon {
+  font-size: 0.9rem;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+/* Etiqueta tipo chip junto al título (ej. "OLEADAS 1-3") */
+.gallery-subtitle-tag {
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  color: var(--cyan);
+  border: 1px solid var(--cyan-dim);
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+/* Variante roja para el jefe */
+.gallery-subtitle-tag-boss {
+  color: var(--red);
+  border-color: rgba(255, 68, 68, 0.5);
+}
+
+/* Grid de fotos de un personaje: 4 cols escritorio, 2 tablet, 1 móvil */
+.char-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+/* Celda individual de foto */
+.char-photo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Contenedor de la imagen con aspect-ratio cuadrado */
+.char-photo-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  /* Fondo de puntos pixel art */
+  background-image: radial-gradient(rgba(232,124,42,0.04) 1px, transparent 1px);
+  background-size: 8px 8px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.char-photo-wrap:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 20px var(--orange-glow);
+}
+/* Imagen dentro del contenedor */
+.char-photo-wrap img,
+.char-photo-wrap .sprite-normal,
+.char-photo-wrap .sprite-hover {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Para los .char-photo-wrap con swap de expresión (clase .sprite-swap) */
+.sprite-swap { position: relative; }
+.sprite-swap .sprite-normal,
+.sprite-swap .sprite-hover {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.3s ease;
+}
+.sprite-swap .sprite-normal { opacity: 1; }
+.sprite-swap .sprite-hover  { opacity: 0; }
+.char-photo-item:hover .sprite-normal { opacity: 0; }
+.char-photo-item:hover .sprite-hover  { opacity: 1; }
+
+/* Etiqueta debajo de cada foto */
+.char-photo-label {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* Tarjeta de lore (descripción textual del personaje) */
+.char-lore-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem;
+  justify-content: center;
+  align-items: flex-start;
+  backdrop-filter: blur(8px);
+  aspect-ratio: 1 / 1;   /* Misma altura que las fotos */
+  width: 100%;
+  box-sizing: border-box;
+}
+.char-lore-card p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+/* Variante roja para el jefe */
+.char-lore-card-boss {
+  border-color: rgba(255,68,68,0.25);
+}
+
+/* Responsive: char-photos-grid */
+@media (max-width: 900px)  { .char-photos-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px)  { .char-photos-grid { grid-template-columns: 1fr 1fr; } }
+
+
+/* ================================================================
+   REPRODUCTOR DE AUDIO (SOUND PLAYER)
+   .sound-player      → contenedor principal del reproductor
+   .player-top        → fila superior: portada + nombre de pista
+   .player-art        → cuadrado con icono animado de nota musical
+   .player-progress   → barra de progreso (input range)
+   .player-controls   → fila de botones + volumen
+   .track-list        → lista de pistas clickables
+   .track-item        → fila de una pista en la lista
+   .track-item.active → pista actualmente en reproducción
+================================================================ */
+
+/* Contenedor principal del reproductor */
+.sound-player {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 680px;
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+/* Brillo de fondo sutil */
+.sound-player::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Fila superior: portada + info */
+.player-top {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cuadrado de "portada" con la nota musical animada */
+.player-art {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Nota musical — gira cuando hay una pista activa (clase .playing en script.js) */
+.player-art-icon {
+  font-size: 1.8rem;
+  color: var(--cyan);
+  transition: color var(--transition);
+}
+.sound-player.playing .player-art-icon {
+  color: var(--orange);
+  animation: note-spin 3s linear infinite;
+}
+@keyframes note-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Info de la pista activa */
+.player-track-name {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player-track-cat {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* Fila de progreso */
+.player-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.player-time {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--text-dim);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+/* Input range reutilizado para progreso y volumen */
+.player-progress,
+.player-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  outline: none;
+  transition: background var(--transition);
+}
+.player-progress { flex: 1; }
+.player-volume   { width: 80px; }
+
+/* Track (la barra rellena) — color naranja */
+.player-progress::-webkit-slider-thumb,
+.player-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange-glow);
+  cursor: none;
+}
+.player-progress::-moz-range-thumb,
+.player-volume::-moz-range-thumb {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: none;
+  box-shadow: 0 0 8px var(--orange-glow);
+}
+
+/* Fila de botones de control */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Botón genérico del reproductor */
+.player-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  transition: var(--transition);
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.player-btn:hover {
+  color: var(--text);
+  border-color: var(--border-glow);
+  box-shadow: 0 0 10px var(--orange-glow);
+}
+/* Botón play/pause (más grande y destacado) */
+.player-btn-main {
+  background: var(--orange);
+  color: var(--bg);
+  border-color: var(--orange);
+  font-size: 1rem;
+  padding: 0.5rem 1.1rem;
+  box-shadow: 0 0 16px var(--orange-glow);
+}
+.player-btn-main:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 0 30px var(--orange-glow);
+}
+/* Icono de volumen */
+.player-vol-icon {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-left: auto; /* Empuja volumen hacia la derecha */
+}
+
+/* Lista de pistas */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 240px;
+  overflow-y: auto;
+  /* Scrollbar personalizada */
+  scrollbar-width: thin;
+  scrollbar-color: var(--orange-dim) transparent;
+}
+.track-list::-webkit-scrollbar       { width: 4px; }
+.track-list::-webkit-scrollbar-track { background: transparent; }
+.track-list::-webkit-scrollbar-thumb { background: var(--orange-dim); border-radius: 2px; }
+
+/* Fila de pista individual */
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: var(--transition);
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+}
+.track-item:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--border);
+}
+/* Pista activa */
+.track-item.active {
+  background: rgba(232,124,42,0.1);
+  border-color: var(--border-glow);
+}
+.track-item.active .track-num { color: var(--orange); }
+.track-item.active .track-name { color: var(--text); }
+
+/* Número de pista */
+.track-num {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--text-dim);
+  min-width: 1.5rem;
+  text-align: right;
+}
+/* Nombre de la pista */
+.track-name {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Categoría de la pista (OST / SFX) */
+.track-cat {
+  font-family: var(--font-pixel);
+  font-size: 0.38rem;
+  color: var(--cyan-dim);
+  border: 1px solid var(--cyan-dim);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.track-cat.sfx {
+  color: var(--orange-dim);
+  border-color: var(--orange-dim);
+}
+
+
+/* ================================================================
+   FOOTER — 2 COLUMNAS
+   .footer-inner-2col sobreescribe el grid de 4 columnas original.
+================================================================ */
+.footer-inner-2col {
+  grid-template-columns: 1fr 2fr !important;
+  max-width: 760px !important;  /* Footer más compacto al tener menos columnas */
+}
+@media (max-width: 640px) {
+  .footer-inner-2col {
+    grid-template-columns: 1fr !important;
+  }
 }

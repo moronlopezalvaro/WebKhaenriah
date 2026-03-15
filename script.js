@@ -362,72 +362,85 @@
 
 
   /* ================================================================
-     8. CURSOR PERSONALIZADO — Punto neon + anillo
-        Se crean dos divs: un punto pequeño (.cursor-dot) y un anillo
-        más grande (.cursor-ring) que siguen al cursor.
-        Al pasar sobre elementos interactivos, ambos se agrandan.
+     8. CURSOR PERSONALIZADO (NEÓN)
+        Reemplaza el cursor del sistema con dos elementos propios:
+          · cursorDot  → punto naranja pequeño, pegado al puntero
+          · cursorRing → anillo más grande, sigue con lag suave
+
+        Al hacer hover sobre elementos interactivos (a, button,
+        tarjetas de feat, gallery, chars) ambos crecen.
 
         En dispositivos táctiles se ocultan automáticamente.
+
+        Para desactivarlo: elimina o comenta toda esta sección
+        y borra las reglas "cursor: none" de style.css.
   ================================================================ */
+
+  /* Punto central del cursor */
   const cursorDot = document.createElement('div');
-  cursorDot.setAttribute('aria-hidden', 'true');
-  cursorDot.style.cssText = `
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--orange);
-    box-shadow: 0 0 12px var(--orange-glow), 0 0 24px var(--orange-glow);
-    transform: translate(-50%, -50%);
-    transition: width 0.2s ease, height 0.2s ease;
-    mix-blend-mode: screen;
-  `;
+  cursorDot.id = 'cursor-dot';
+  cursorDot.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:0',
+    'pointer-events:none',
+    'z-index:9999',
+    'width:8px',
+    'height:8px',
+    'border-radius:50%',
+    'background:var(--orange)',
+    'box-shadow:0 0 12px var(--orange-glow),0 0 24px var(--orange-glow)',
+    'transform:translate(-50%,-50%)',
+    'transition:width .18s ease,height .18s ease',
+    'mix-blend-mode:screen',
+  ].join(';');
   document.body.appendChild(cursorDot);
 
+  /* Anillo exterior del cursor */
   const cursorRing = document.createElement('div');
-  cursorRing.setAttribute('aria-hidden', 'true');
-  cursorRing.style.cssText = `
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    border: 1px solid rgba(232, 124, 42, 0.5);
-    transform: translate(-50%, -50%);
-    transition: left 0.12s ease, top 0.12s ease, width 0.2s ease, height 0.2s ease;
-  `;
+  cursorRing.id = 'cursor-ring';
+  cursorRing.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:0',
+    'pointer-events:none',
+    'z-index:9998',
+    'width:28px',
+    'height:28px',
+    'border-radius:50%',
+    'border:1px solid rgba(232,124,42,0.5)',
+    'transform:translate(-50%,-50%)',
+    'transition:width .22s ease,height .22s ease,opacity .2s ease',
+  ].join(';');
   document.body.appendChild(cursorRing);
 
-  /* Actualizar posición en cada movimiento del ratón */
+  /* Mueve los dos elementos con el ratón */
   document.addEventListener('mousemove', (e) => {
-    /* El punto sigue al instante */
-    cursorDot.style.left = e.clientX + 'px';
-    cursorDot.style.top  = e.clientY + 'px';
-    /* El anillo va ligeramente retrasado (via CSS transition) */
+    cursorDot.style.left  = e.clientX + 'px';
+    cursorDot.style.top   = e.clientY + 'px';
     cursorRing.style.left = e.clientX + 'px';
     cursorRing.style.top  = e.clientY + 'px';
   });
 
-  /* Agrandar cursor sobre elementos interactivos */
-  document.querySelectorAll('a, button, .feat-card, .gallery-item, .sprite-card').forEach(el => {
+  /* Expansión al hover sobre elementos interactivos */
+  document.querySelectorAll('a, button, .feat-card, .gallery-item, .char-card, .sprite-card').forEach(el => {
     el.addEventListener('mouseenter', () => {
-      cursorDot.style.width   = '14px';
-      cursorDot.style.height  = '14px';
-      cursorRing.style.width  = '44px';
-      cursorRing.style.height = '44px';
+      cursorDot.style.width    = '14px';
+      cursorDot.style.height   = '14px';
+      cursorRing.style.width   = '44px';
+      cursorRing.style.height  = '44px';
+      cursorRing.style.opacity = '0.8';
     });
     el.addEventListener('mouseleave', () => {
-      cursorDot.style.width   = '8px';
-      cursorDot.style.height  = '8px';
-      cursorRing.style.width  = '28px';
-      cursorRing.style.height = '28px';
+      cursorDot.style.width    = '8px';
+      cursorDot.style.height   = '8px';
+      cursorRing.style.width   = '28px';
+      cursorRing.style.height  = '28px';
+      cursorRing.style.opacity = '1';
     });
   });
 
-  /* Ocultar cursor personalizado en dispositivos táctiles */
+  /* Oculta el cursor personalizado en táctil (sin ratón) */
   if ('ontouchstart' in window) {
     cursorDot.style.display  = 'none';
     cursorRing.style.display = 'none';
@@ -475,3 +488,273 @@
   document.head.appendChild(glitchStyle);
 
 })(); /* fin del IIFE — evita contaminar el scope global */
+
+/* ================================================================
+   SECCIÓN 10 — SISTEMA DE AUDIO
+   Controla música de fondo y efectos de sonido de la landing page.
+
+   ELEMENTOS DE AUDIO (definidos en index.html, al final del body):
+     #audioMusica  → sonidos/MusicaInicio.wav  (música de fondo, loop)
+     #audioClick   → sonidos/SonidoClick.wav   (SFX al hacer click)
+     #audioDisparo → sonidos/Disparo.wav       (SFX adicional disponible)
+
+   COMPORTAMIENTO:
+     - La música empieza SILENCIADA (los navegadores bloquean autoplay).
+     - El botón ♪ del navbar activa/desactiva la música.
+     - SonidoClick.wav suena en cada click de botón o enlace.
+
+   PARA AJUSTAR VOLUMEN: edita los valores .volume debajo (0.0–1.0).
+   PARA CAMBIAR LA PISTA: edita el src del <audio id="audioMusica"> en HTML.
+================================================================ */
+(function initAudio() {
+
+  /* Obtiene los elementos del DOM */
+  const audioMusica  = document.getElementById('audioMusica');
+  const audioClick   = document.getElementById('audioClick');
+  const audioDisparo = document.getElementById('audioDisparo');
+  const musicToggle  = document.getElementById('musicToggle');
+  const musicIcon    = musicToggle ? musicToggle.querySelector('.music-icon') : null;
+
+  /* Estado de la música */
+  let musicActive = false;
+
+  /* Volúmenes iniciales (0.0 = silencio, 1.0 = máximo) */
+  if (audioMusica)  audioMusica.volume  = 0.40; /* Música de fondo al 40% */
+  if (audioClick)   audioClick.volume   = 0.55; /* Click SFX al 55% */
+  if (audioDisparo) audioDisparo.volume = 0.35; /* Disparo SFX al 35% */
+
+  /* Función auxiliar: reproduce un SFX clonando el nodo
+     para permitir que suene varias veces solapado */
+  function playSFX(audioEl) {
+    if (!audioEl) return;
+    try {
+      const sfx = audioEl.cloneNode();
+      sfx.volume = audioEl.volume;
+      sfx.play().catch(function() {});
+    } catch (e) {}
+  }
+
+  /* Toggle del botón de música */
+  if (musicToggle && audioMusica) {
+    musicToggle.addEventListener('click', function() {
+      musicActive = !musicActive;
+
+      if (musicActive) {
+        audioMusica.play().then(function() {
+          musicToggle.classList.add('music-on');
+          if (musicIcon) musicIcon.textContent = '♫'; /* Nota doble = activa */
+        }).catch(function() {
+          musicActive = false; /* Navegador bloqueó el play — reintentar */
+        });
+      } else {
+        audioMusica.pause();
+        musicToggle.classList.remove('music-on');
+        if (musicIcon) musicIcon.textContent = '♪'; /* Nota simple = silenciada */
+      }
+    });
+  }
+
+  /* Sonido de click en botones y enlaces de acción */
+  document.querySelectorAll('.btn, .nav-cta, .btn-subscribe, .music-btn, .social-btn').forEach(function(el) {
+    el.addEventListener('click', function() { playSFX(audioClick); });
+  });
+
+  /* Pequeña animación de atención en el botón de música
+     la primera vez que el usuario interactúa con la página,
+     para invitarle a activar la música */
+  function onFirstInteraction() {
+    if (!musicActive && musicToggle) {
+      musicToggle.style.transform = 'scale(1.15)';
+      musicToggle.style.borderColor = 'var(--cyan)';
+      setTimeout(function() {
+        musicToggle.style.transform = '';
+        musicToggle.style.borderColor = '';
+      }, 400);
+    }
+    document.removeEventListener('click', onFirstInteraction);
+    document.removeEventListener('keydown', onFirstInteraction);
+  }
+  document.addEventListener('click', onFirstInteraction);
+  document.addEventListener('keydown', onFirstInteraction);
+
+}());
+
+/* ================================================================
+   SECCIÓN 11 — REPRODUCTOR DE AUDIO (SOUND PLAYER)
+   Controla el reproductor personalizado de la sección Galería → Sonidos.
+
+   PISTAS (array TRACKS):
+   Cada objeto tiene:
+     { file: 'ruta/al/archivo.wav', name: 'Nombre visible', cat: 'OST' | 'SFX' }
+
+   PARA AÑADIR UNA PISTA: añade un objeto al array TRACKS.
+   PARA QUITAR UNA PISTA: elimina su objeto del array TRACKS.
+   PARA CAMBIAR NOMBRE:   edita la propiedad "name" del objeto.
+================================================================ */
+(function initSoundPlayer() {
+
+  /* ── Lista de pistas disponibles ──────────────────────────────
+     Ajusta las rutas si mueves los archivos de carpeta.
+     cat: 'OST' para música, 'SFX' para efectos de sonido.
+  ─────────────────────────────────────────────────────────────── */
+  const TRACKS = [
+    { file: 'sonidos/MusicaInicio.wav',  name: 'Música de Inicio',  cat: 'OST' },
+    { file: 'sonidos/MusicaJuego.wav',   name: 'Música de Juego',   cat: 'OST' },
+    { file: 'sonidos/Victoria.wav',      name: 'Victoria',          cat: 'OST' },
+    { file: 'sonidos/GameOver.wav',      name: 'Game Over',         cat: 'OST' },
+    { file: 'sonidos/Disparo.wav',       name: 'Disparo',           cat: 'SFX' },
+    { file: 'sonidos/Explosion.wav',     name: 'Explosión',         cat: 'SFX' },
+    { file: 'sonidos/SonidoClick.wav',   name: 'Clic de Interfaz',  cat: 'SFX' },
+  ];
+
+  /* ── Referencias a los elementos del DOM ── */
+  const playerAudio       = document.getElementById('playerAudio');
+  const playerPlay        = document.getElementById('playerPlay');
+  const playerPrev        = document.getElementById('playerPrev');
+  const playerNext        = document.getElementById('playerNext');
+  const playerProgress    = document.getElementById('playerProgress');
+  const playerVolume      = document.getElementById('playerVolume');
+  const playerCurrentTime = document.getElementById('playerCurrentTime');
+  const playerDuration    = document.getElementById('playerDuration');
+  const playerTrackName   = document.getElementById('playerTrackName');
+  const playerTrackCat    = document.getElementById('playerTrackCat');
+  const playerArtIcon     = document.getElementById('playerArtIcon');
+  const trackList         = document.getElementById('trackList');
+  const soundPlayer       = document.getElementById('soundPlayer');
+
+  /* Si algún elemento no existe en el DOM, salir silenciosamente */
+  if (!playerAudio || !trackList) return;
+
+  /* Estado del reproductor */
+  let currentIndex = -1; /* -1 = ninguna pista cargada */
+  let isPlaying    = false;
+
+  /* ── Función auxiliar: formatea segundos como "m:ss" ── */
+  function fmt(sec) {
+    if (isNaN(sec) || !isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  /* ── Construye la lista de pistas en el DOM ─────────────────── */
+  TRACKS.forEach(function(track, i) {
+    const btn = document.createElement('button');
+    btn.className = 'track-item';
+    btn.dataset.index = i;
+    btn.innerHTML =
+      '<span class="track-num">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="track-name">' + track.name + '</span>' +
+      '<span class="track-cat' + (track.cat === 'SFX' ? ' sfx' : '') + '">' + track.cat + '</span>';
+    btn.addEventListener('click', function() { loadTrack(i, true); });
+    trackList.appendChild(btn);
+  });
+
+  /* ── Carga una pista por índice ──────────────────────────────── */
+  function loadTrack(index, autoplay) {
+    if (index < 0 || index >= TRACKS.length) return;
+    currentIndex = index;
+    const t = TRACKS[index];
+
+    playerAudio.src = t.file;
+    playerAudio.load();
+    if (playerTrackName) playerTrackName.textContent = t.name;
+    if (playerTrackCat)  playerTrackCat.textContent  = t.cat === 'SFX' ? 'Efecto de Sonido' : 'Khaneri\'ah OST';
+
+    /* Marca la pista activa en la lista */
+    trackList.querySelectorAll('.track-item').forEach(function(el, i) {
+      el.classList.toggle('active', i === index);
+    });
+
+    /* Resetea la barra de progreso */
+    if (playerProgress) playerProgress.value = 0;
+    if (playerCurrentTime) playerCurrentTime.textContent = '0:00';
+    if (playerDuration)    playerDuration.textContent    = '0:00';
+
+    if (autoplay) play();
+  }
+
+  /* ── Reproduce ── */
+  function play() {
+    playerAudio.play().then(function() {
+      isPlaying = true;
+      if (playerPlay) playerPlay.textContent = '❚❚';
+      if (soundPlayer) soundPlayer.classList.add('playing');
+    }).catch(function() {
+      /* El navegador bloqueó la reproducción — el usuario debe interactuar primero */
+    });
+  }
+
+  /* ── Pausa ── */
+  function pause() {
+    playerAudio.pause();
+    isPlaying = false;
+    if (playerPlay) playerPlay.textContent = '▶';
+    if (soundPlayer) soundPlayer.classList.remove('playing');
+  }
+
+  /* ── Botón play/pause ── */
+  if (playerPlay) {
+    playerPlay.addEventListener('click', function() {
+      if (currentIndex === -1) {
+        loadTrack(0, true); /* Si no hay pista cargada, carga la primera */
+        return;
+      }
+      if (isPlaying) { pause(); } else { play(); }
+    });
+  }
+
+  /* ── Botón anterior ── */
+  if (playerPrev) {
+    playerPrev.addEventListener('click', function() {
+      /* Si la pista lleva más de 3 segundos, vuelve al inicio de la misma */
+      if (playerAudio.currentTime > 3) {
+        playerAudio.currentTime = 0;
+      } else {
+        loadTrack(currentIndex > 0 ? currentIndex - 1 : TRACKS.length - 1, isPlaying);
+      }
+    });
+  }
+
+  /* ── Botón siguiente ── */
+  if (playerNext) {
+    playerNext.addEventListener('click', function() {
+      loadTrack((currentIndex + 1) % TRACKS.length, isPlaying);
+    });
+  }
+
+  /* ── Actualiza la barra de progreso y el tiempo ── */
+  playerAudio.addEventListener('timeupdate', function() {
+    if (!playerAudio.duration) return;
+    const pct = (playerAudio.currentTime / playerAudio.duration) * 100;
+    if (playerProgress)    playerProgress.value = pct;
+    if (playerCurrentTime) playerCurrentTime.textContent = fmt(playerAudio.currentTime);
+  });
+
+  /* ── Actualiza la duración total cuando el audio está listo ── */
+  playerAudio.addEventListener('loadedmetadata', function() {
+    if (playerDuration) playerDuration.textContent = fmt(playerAudio.duration);
+  });
+
+  /* ── Arrastrar la barra de progreso ── */
+  if (playerProgress) {
+    playerProgress.addEventListener('input', function() {
+      if (!playerAudio.duration) return;
+      playerAudio.currentTime = (playerProgress.value / 100) * playerAudio.duration;
+    });
+  }
+
+  /* ── Control de volumen ── */
+  if (playerVolume) {
+    playerAudio.volume = playerVolume.value / 100;
+    playerVolume.addEventListener('input', function() {
+      playerAudio.volume = playerVolume.value / 100;
+    });
+  }
+
+  /* ── Al terminar una pista, avanza automáticamente a la siguiente ── */
+  playerAudio.addEventListener('ended', function() {
+    loadTrack((currentIndex + 1) % TRACKS.length, true);
+  });
+
+}());

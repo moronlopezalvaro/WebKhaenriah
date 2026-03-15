@@ -57,6 +57,14 @@
         <li><a href="#download" class="nav-cta">Descargar</a></li>
       </ul>
 
+      <!-- BOTÓN DE MÚSICA
+           Activa/desactiva la música de fondo (sonidos/MusicaInicio.wav).
+           La lógica está en script.js (Sección 10 — AUDIO).
+           Clase .music-on se añade cuando la música está activa. -->
+      <button class="music-btn" id="musicToggle" aria-label="Activar música">
+        <span class="music-icon">♪</span>
+      </button>
+
     </nav>
   </header>
 
@@ -72,8 +80,25 @@
 
       <!-- FONDO: imagen del planeta con efecto parallax.
            La imagen se define en CSS (.hero-bg-planet) como background-image.
-           Para cambiarla, edita la propiedad background-image en style.css. -->
+           Para cambiarla: edita background-image en style.css → .hero-bg-planet
+           Imagen real: fondos/PlanetaOscuro.jpg -->
       <div class="hero-bg-planet"></div>
+
+      <!-- NAVE DECORATIVA
+           Imagen real de la nave del juego (nave/Nave.png).
+           Flota suavemente sobre el hero con animación CSS.
+           Para quitar: elimina este bloque completo. -->
+      <div class="hero-ship">
+        <img src="nave/Nave.png" alt="Nave de Khaneri'ah" />
+      </div>
+
+      <!-- BALAS DECORATIVAS
+           Usa bala.gif (animado) cruzando el hero de forma decorativa.
+           El número y posición se controlan mediante clases CSS (.bala-1, .bala-2, etc.)
+           Para añadir más balas: duplica un <div class="hero-bala"> -->
+      <div class="hero-bala bala-1"><img src="balas/bala.gif" alt="" aria-hidden="true"/></div>
+      <div class="hero-bala bala-2"><img src="balas/bala.gif" alt="" aria-hidden="true"/></div>
+      <div class="hero-bala bala-3"><img src="balas/bala.gif" alt="" aria-hidden="true"/></div>
 
       <!-- CONTENIDO CENTRAL DEL HERO -->
       <div class="hero-content reveal">
@@ -94,7 +119,7 @@
         <p class="hero-sub">
           Un bullet hell sin cuartel. Una nave, un piloto, nueve oleadas implacables
           y una batalla final que decidirá el destino de la galaxia.<br/>
-          ¿Cuánto tiempo sobrevivirás?
+          ¿Lo lograrás?
         </p>
 
         <!-- BOTONES DE ACCIÓN PRINCIPALES -->
@@ -156,7 +181,7 @@
         <!-- PLACEHOLDER DE VÍDEO — reemplazar con iframe de YouTube -->
         <div class="trailer-placeholder">
           <div class="play-icon">▶</div>
-          <p>Gameplay Trailer — 2026</p>
+          <p>Gameplay Trailer — 2026 (proximamente)</p>
         </div>
 
         <!-- Esquinas decorativas pixel art (solo CSS, no editar) -->
@@ -197,8 +222,8 @@
           </div>
           <h3>Combates Épicos</h3>
           <!-- Descripción de la característica — editar aquí -->
-          <p>Nueve oleadas de enemigos con patrones únicos antes de enfrentarte
-             al jefe final en el nivel 10. Cada partida te pondrá al límite.</p>
+          <p>Nueve oleadas de enemigos con patrones únicos de aparición antes de enfrentarte 
+            al jefe final en el nivel 10. Cada partida te pondrá al límite.</p>
           <div class="feat-tag">BOSS FIGHT · LVL 10</div>
         </div>
 
@@ -215,7 +240,7 @@
           </div>
           <h3>Tu Nave, tu Leyenda</h3>
           <p>Una sola nave. Una sola vida. Domina sus capacidades al máximo para
-             superar los desafíos que te esperan en el espacio profundo.</p>
+            superar los desafíos que te esperan en el espacio profundo.</p>
           <div class="feat-tag">SINGLE SHIP</div>
         </div>
 
@@ -234,7 +259,7 @@
           </div>
           <h3>Banda Sonora Original</h3>
           <p>4 pistas originales compuestas para cada fase del juego. Una experiencia
-             audiovisual diseñada para mantenerte en tensión constante.</p>
+            audiovisual diseñada para mantenerte en tensión constante.</p>
           <div class="feat-tag">4 OST TRACKS</div>
         </div>
 
@@ -251,7 +276,7 @@
           </div>
           <h3>Bullet Hell Puro</h3>
           <p>Esquiva oleadas de proyectiles en patrones diseñados para ponerte al límite.
-             Reflejos, concentración y precisión son tus únicas armas.</p>
+            Reflejos, concentración y precisión son tus únicas armas.</p>
           <div class="feat-tag">BULLET HELL</div>
         </div>
 
@@ -264,8 +289,8 @@
                     stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </div>
-          <h3>Enemigos Únicos</h3>
-          <p>Champi, Coloson, Geocentinela y el temible Zaroth. Cada enemigo con
+          <h3>Personajes Únicos</h3>
+          <p>Champi, Coloson, Geocentinelas y el temible Zaroth. Cada enemigo con
              comportamiento propio, sprites animados y ataques exclusivos.</p>
           <div class="feat-tag">4 ENEMIES</div>
         </div>
@@ -298,139 +323,304 @@
 
     <!-- ══════════════════════════════════════
          SECCIÓN: GALERÍA
-         Dividida en dos subsecciones:
-           A) .gallery-grid   → screenshots del juego
-           B) .sprites-grid   → sprites de los 4 personajes
+         Dividida en subsecciones por personaje + sección de sonidos.
+         Estructura:
+           · Escenarios (fondos del juego)
+           · Champi     (fotos/sprites de Champi)
+           · Coloson    (fotos/sprites de Coloson)
+           · Geocentinela
+           · Zaroth
+           · Sonidos    (reproductor de audio con todas las pistas)
+
+         Para añadir fotos a un personaje: duplica cualquier .char-photo-item
+         dentro del .char-photos-grid correspondiente.
+         Para reordenar secciones: mueve el bloque .gallery-block completo.
     ══════════════════════════════════════ -->
     <section id="gallery">
 
       <div class="section-label">// GALERÍA</div>
-
       <div class="section-header reveal">
-        <h2>Capturas del <span class="gradient-text">campo de batalla</span></h2>
+        <h2>El universo de <span class="gradient-text">Khaneri'ah</span></h2>
+        <p>Escenarios, personajes y banda sonora.</p>
       </div>
 
-      <!-- ─────────────────────────────────────
-           SUBSECCIÓN A: SCREENSHOTS DEL JUEGO
-           Clases de item disponibles:
-             .gallery-item        → tamaño normal (1 columna)
-             .gallery-item.gi-wide → ancho doble (2 columnas)
-           Para añadir más capturas: copia un .gallery-item y cambia el src.
-           Los placeholders tienen formato: placehold.co/WIDTHxHEIGHT/BG/TEXT
-      ───────────────────────────────────────── -->
-      <h3 class="gallery-subtitle reveal">Escenarios</h3>
 
-      <div class="gallery-grid reveal">
+      <!-- ════════════════════════════════
+           BLOQUE: ESCENARIOS
+           Imágenes de los fondos del juego.
+           Para añadir más: copia un .gallery-item y cambia el src.
+      ════════════════════════════════ -->
+      <div class="gallery-block reveal">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon">◈</span> Escenarios
+        </h3>
+        <div class="gallery-grid">
 
-        <!-- Screenshot 1: Fondo del planeta (imagen real subida por el usuario) -->
-        <div class="gallery-item gi-wide">
-          <img src="fondo_planeta.jpg" alt="Superficie del planeta Khaneri'ah" loading="lazy"/>
-          <div class="gallery-overlay"><span>Superficie de Khaneri'ah</span></div>
-        </div>
-
-        <!-- Screenshot 2: Vista orbital (imagen real subida por el usuario) -->
-        <div class="gallery-item">
-          <img src="planeta.jpg" alt="Vista orbital del planeta" loading="lazy"/>
-          <div class="gallery-overlay"><span>Vista Orbital</span></div>
-        </div>
-
-        <!-- Screenshot 3: PLACEHOLDER — reemplaza con captura real del jefe final -->
-        <div class="gallery-item">
-          <img src="https://placehold.co/600x450/1a0a0a/e87c2a?text=Boss+Fight+Lvl+10"
-               alt="Batalla contra Zaroth en el nivel 10" loading="lazy"/>
-          <div class="gallery-overlay"><span>Zaroth — Nivel 10</span></div>
-        </div>
-
-        <!-- Screenshot 4: PLACEHOLDER — reemplaza con captura de oleada bullet hell -->
-        <div class="gallery-item">
-          <img src="https://placehold.co/600x450/0a0a1a/00e5ff?text=Bullet+Hell+Oleada"
-               alt="Oleada de disparos" loading="lazy"/>
-          <div class="gallery-overlay"><span>Oleada Bullet Hell</span></div>
-        </div>
-
-        <!-- Screenshot 5: PLACEHOLDER — reemplaza con captura de la oleada 9 -->
-        <div class="gallery-item gi-wide">
-          <img src="https://placehold.co/1200x500/0d0d0d/e87c2a?text=Oleada+9+—+La+Última"
-               alt="Oleada 9 — la última antes del jefe" loading="lazy"/>
-          <div class="gallery-overlay"><span>Oleada 9 — La Última</span></div>
-        </div>
-
-      </div><!-- /gallery-grid (screenshots) -->
-
-
-      <!-- ─────────────────────────────────────
-           SUBSECCIÓN B: SPRITES DE PERSONAJES
-           Para añadir un personaje: copia un .sprite-card completo.
-           Para el jefe final usa la clase adicional .sprite-boss (borde rojo).
-           Reemplaza los src de los <img> con los sprites reales del juego.
-      ───────────────────────────────────────── -->
-      <h3 class="gallery-subtitle reveal" style="--delay: 0.1s">Personajes</h3>
-
-      <div class="sprites-grid reveal" style="--delay: 0.15s">
-
-        <!-- ── PERSONAJE 1: CHAMPI ──
-             Reemplaza src con el sprite real de Champi -->
-        <div class="sprite-card">
-          <div class="sprite-img-wrap">
-            <img src="https://placehold.co/200x200/120a08/e87c2a?text=CHAMPI"
-                 alt="Sprite de Champi" loading="lazy"/>
+          <!-- Fondo 1: superficie del planeta (imagen real) -->
+          <div class="gallery-item gi-wide">
+            <img src="fondos/FondoPlaneta.jpg" alt="Superficie de Khaneri'ah" loading="lazy"/>
+            <div class="gallery-overlay"><span>Superficie de Khaneri'ah</span></div>
           </div>
-          <div class="sprite-info">
-            <h4>Champi</h4>
-            <!-- Descripción breve del personaje — editar aquí -->
-            <p>Enemigo veloz de las primeras oleadas. Sus esporas explosivas cubren el campo en segundos.</p>
-            <div class="sprite-tag">OLEADAS 1–3</div>
-          </div>
-        </div>
 
-        <!-- ── PERSONAJE 2: COLOSON ──
-             Reemplaza src con el sprite real de Coloson -->
-        <div class="sprite-card">
-          <div class="sprite-img-wrap">
-            <img src="https://placehold.co/200x200/080a12/00e5ff?text=COLOSON"
-                 alt="Sprite de Coloson" loading="lazy"/>
+          <!-- Fondo 2: vista orbital oscurecida (imagen real) -->
+          <div class="gallery-item">
+            <img src="fondos/PlanetaOscuro.jpg" alt="Vista orbital del planeta oscurecido" loading="lazy"/>
+            <div class="gallery-overlay"><span>Vista Orbital Oscurecida</span></div>
           </div>
-          <div class="sprite-info">
-            <h4>Coloson</h4>
-            <!-- Descripción breve del personaje — editar aquí -->
-            <p>Coloso mecánico de oleadas intermedias. Dispara en ráfagas precisas y es muy resistente.</p>
-            <div class="sprite-tag">OLEADAS 4–6</div>
-          </div>
-        </div>
 
-        <!-- ── PERSONAJE 3: GEOCENTINELA ──
-             Reemplaza src con el sprite real de Geocentinela -->
-        <div class="sprite-card">
-          <div class="sprite-img-wrap">
-            <img src="https://placehold.co/200x200/0a1208/7fff00?text=GEOCENTINELA"
-                 alt="Sprite de Geocentinela" loading="lazy"/>
+          <!-- Fondo 3: vista orbital (imagen real) -->
+          <div class="gallery-item">
+            <img src="fondos/Planeta.jpg" alt="Vista orbital del planeta" loading="lazy"/>
+            <div class="gallery-overlay"><span>Vista Orbital</span></div>
           </div>
-          <div class="sprite-info">
-            <h4>Geocentinela</h4>
-            <!-- Descripción breve del personaje — editar aquí -->
-            <p>Guardián de cristal de las oleadas avanzadas. Sus patrones de disparo son impredecibles.</p>
-            <div class="sprite-tag">OLEADAS 7–9</div>
-          </div>
-        </div>
 
-        <!-- ── PERSONAJE 4: ZAROTH (JEFE FINAL) ──
-             Clase .sprite-boss aplica el borde y brillo rojo especial de jefe.
-             Reemplaza src con el sprite real de Zaroth -->
-        <div class="sprite-card sprite-boss">
-          <div class="sprite-img-wrap">
-            <img src="https://placehold.co/200x200/1a0505/ff4444?text=ZAROTH"
-                 alt="Sprite de Zaroth — Jefe Final" loading="lazy"/>
-          </div>
-          <div class="sprite-info">
-            <!-- El <span class="boss-badge"> añade la etiqueta roja "JEFE" -->
-            <h4>Zaroth <span class="boss-badge">JEFE</span></h4>
-            <!-- Descripción breve del personaje — editar aquí -->
-            <p>El dios oscuro de Khaneri'ah. Solo los más hábiles llegarán a enfrentarle en el nivel 10.</p>
-            <div class="sprite-tag boss-tag">NIVEL 10 — BOSS FINAL</div>
-          </div>
-        </div>
+        </div><!-- /gallery-grid escenarios -->
+      </div><!-- /gallery-block escenarios -->
 
-      </div><!-- /sprites-grid -->
+
+      <!-- ════════════════════════════════
+          BLOQUE: CHAMPI
+          Para añadir fotos: copia un .char-photo-item con nueva imagen.
+          Para cambiar la imagen de hover: edita src de .sprite-hover.
+      ════════════════════════════════ -->
+      <div class="gallery-block reveal" style="--delay: 0.05s">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon" style="color: #2b8f04">◈</span> Champi
+          <span class="gallery-subtitle-tag">Piloto de la P.G.</span>
+        </h3>
+        <div class="char-photos-grid">
+
+          <!-- Sprite principal -->
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="champi/Champi.png"         alt="Champi normal" loading="lazy"/>
+              <img class="sprite-hover"  src="champi/ChampiEnfadado.png" alt="Champi enfadado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Normal</span>
+          </div>
+
+          <!-- Expresión enfadada -->
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="champi/ChampiEnfadado.png"    alt="Champi enfadado" loading="lazy"/>
+              <img class="sprite-hover"  src="champi/ChampiPreocupado.png"  alt="Champi preocupado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Enfadado</span>
+          </div>
+
+          <!-- Expresión preocupada -->
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="champi/ChampiPreocupado.png" alt="Champi preocupado" loading="lazy"/>
+              <img class="sprite-hover"  src="champi/Champi.png"           alt="Champi normal" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Preocupado</span>
+          </div>
+
+          <!-- Tarjeta de descripción del personaje -->
+          <div class="char-photo-item char-lore-card">
+            <p>Habitante del planeta Roommush y rotagonista de la aventura. Es un piloto de élite de la Patrulla Galáctica.</p>
+            <!-- Añade más datos del personaje aquí -->
+          </div>
+
+        </div><!-- /char-photos-grid champi -->
+      </div><!-- /gallery-block champi -->
+
+
+      <!-- ════════════════════════════════
+           BLOQUE: COLOSON
+      ════════════════════════════════ -->
+      <div class="gallery-block reveal" style="--delay: 0.08s">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon" style="color: #ffb52b">◈</span> Coloson
+          <span class="gallery-subtitle-tag">Rey de Khaenri'ah</span>
+        </h3>
+        <div class="char-photos-grid">
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="coloson/Coloson.png"           alt="Coloson normal" loading="lazy"/>
+              <img class="sprite-hover"  src="coloson/ColosonAliviado.png" alt="Coloson preocupado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Normal</span>
+          </div>
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="coloson/ColosonAliviado.png"   alt="Coloson aliviado" loading="lazy"/>
+              <img class="sprite-hover"  src="coloson/ColosonPreocupado.png" alt="Coloson preocupado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Aliviado</span>
+          </div>
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="coloson/ColosonPreocupado.png" alt="Coloson preocupado" loading="lazy"/>
+              <img class="sprite-hover"  src="coloson/Coloson.png"           alt="Coloson normal" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Preocupado</span>
+          </div>
+
+          <div class="char-photo-item char-lore-card">
+            <p>Habitante y rey de Khaenri'ah, solicita la ayuda a la Patrulla Galáctica para detener al tirano Zaroth.</p>
+          </div>
+
+        </div>
+      </div><!-- /gallery-block coloson -->
+
+
+      <!-- ════════════════════════════════
+          BLOQUE: GEOCENTINELA
+      ════════════════════════════════ -->
+      <div class="gallery-block reveal" style="--delay: 0.1s">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon" style="color: #8a7040">◈</span> Geocentinela
+          <span class="gallery-subtitle-tag">Súbdito de Zaroth</span>
+        </h3>
+        <div class="char-photos-grid">
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="geocentinelas/Geocentinela.png"          alt="Geocentinela normal" loading="lazy"/>
+              <img class="sprite-hover"  src="geocentinelas/GeocentinelaEuforico.png"  alt="Geocentinela eufórico" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Normal</span>
+          </div>
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="geocentinelas/GeocentinelaEuforico.png"  alt="Geocentinela eufórico" loading="lazy"/>
+              <img class="sprite-hover"  src="geocentinelas/GeocentinelaExplotado.png" alt="Geocentinela explotado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Eufórico</span>
+          </div>
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="geocentinelas/GeocentinelaExplotado.png" alt="Geocentinela explotado" loading="lazy"/>
+              <img class="sprite-hover"  src="geocentinelas/Geocentinela.png"          alt="Geocentinela normal" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Explotado</span>
+          </div>
+
+          <div class="char-photo-item char-lore-card">
+            <p>Minerales del planeta Khaenri'ah manipulados por la magia oscura de Zaroth, dándoles vida y creando un ejército infinito.</p>
+          </div>
+
+        </div>
+      </div><!-- /gallery-block geocentinela -->
+
+
+      <!-- ════════════════════════════════
+          BLOQUE: ZAROTH (JEFE FINAL)
+          Clase .gallery-block-boss aplica borde rojo al bloque.
+      ════════════════════════════════ -->
+      <div class="gallery-block gallery-block-boss reveal" style="--delay: 0.12s">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon" style="color: var(--red)">◈</span> Zaroth
+          <span class="gallery-subtitle-tag gallery-subtitle-tag-boss">JEFE FINAL · NIVEL 10</span>
+        </h3>
+        <div class="char-photos-grid">
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="zaroth/Zaroth.png"         alt="Zaroth normal" loading="lazy"/>
+              <img class="sprite-hover"  src="zaroth/ZarothEnfadado.png" alt="Zaroth enfadado" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Normal</span>
+          </div>
+
+          <div class="char-photo-item">
+            <div class="char-photo-wrap sprite-swap">
+              <img class="sprite-normal" src="zaroth/ZarothEnfadado.png" alt="Zaroth enfadado" loading="lazy"/>
+              <img class="sprite-hover"  src="zaroth/Zaroth.png"         alt="Zaroth normal" loading="lazy" aria-hidden="true"/>
+            </div>
+            <span class="char-photo-label">Enfadado</span>
+          </div>
+
+          <!-- PLACEHOLDER — añade más sprites/artwork de Zaroth aquí -->
+          <div class="char-photo-item">
+            <img src="https://placehold.co/300x300/1a0505/ff4444?text=+" alt="Más artwork próximamente" loading="lazy"/>
+            <span class="char-photo-label">Próximamente</span>
+          </div>
+
+          <div class="char-photo-item char-lore-card char-lore-card-boss">
+            <p>El conquistador oscuro de Khaneri'ah. Solo los más hábiles llegarán a enfrentarle en el nivel 10.</p>
+          </div>
+
+        </div>
+      </div><!-- /gallery-block zaroth -->
+
+
+      <!-- ════════════════════════════════
+          BLOQUE: SONIDOS — REPRODUCTOR DE AUDIO
+          Reproductor personalizado con lista de pistas.
+          Las pistas se definen en el array TRACKS de script.js (Sección 11).
+          Para añadir/quitar pistas: edita el array TRACKS en script.js.
+      ════════════════════════════════ -->
+      <div class="gallery-block reveal" style="--delay: 0.15s" id="soundplayer-block">
+        <h3 class="gallery-subtitle">
+          <span class="gallery-subtitle-icon" style="color: var(--cyan)">◈</span> Banda Sonora
+          <span class="gallery-subtitle-tag">OST · SFX</span>
+        </h3>
+
+        <!-- REPRODUCTOR DE AUDIO PERSONALIZADO
+             Controles: play/pause, barra de progreso, volumen, lista de pistas.
+             La lógica completa está en script.js (Sección 11 — SOUND PLAYER). -->
+        <div class="sound-player" id="soundPlayer">
+
+          <!-- Cabecera del reproductor: portada + info de la pista activa -->
+          <div class="player-top">
+            <div class="player-art">
+              <!-- Icono de nota musical animado -->
+              <div class="player-art-icon" id="playerArtIcon">♫</div>
+            </div>
+            <div class="player-track-info">
+              <!-- Nombre de la pista activa — actualizado por JS -->
+              <div class="player-track-name" id="playerTrackName">Selecciona una pista</div>
+              <!-- Categoría de la pista — actualizado por JS -->
+              <div class="player-track-cat"  id="playerTrackCat">Khaneri'ah OST</div>
+            </div>
+          </div>
+
+          <!-- Barra de progreso y tiempos -->
+          <div class="player-progress-wrap">
+            <!-- La barra es un <input range> para poder arrastrar la posición -->
+            <span class="player-time" id="playerCurrentTime">0:00</span>
+            <input type="range" class="player-progress" id="playerProgress"
+                   value="0" min="0" max="100" step="0.1"
+                   aria-label="Progreso de la pista"/>
+            <span class="player-time" id="playerDuration">0:00</span>
+          </div>
+
+          <!-- Controles de reproducción -->
+          <div class="player-controls">
+            <!-- Botón anterior -->
+            <button class="player-btn" id="playerPrev" aria-label="Pista anterior">◀◀</button>
+            <!-- Botón play/pause — el icono cambia por JS -->
+            <button class="player-btn player-btn-main" id="playerPlay" aria-label="Reproducir">▶</button>
+            <!-- Botón siguiente -->
+            <button class="player-btn" id="playerNext" aria-label="Pista siguiente">▶▶</button>
+            <!-- Control de volumen -->
+            <input type="range" class="player-volume" id="playerVolume"
+                   value="60" min="0" max="100" aria-label="Volumen"/>
+            <span class="player-vol-icon">♪</span>
+          </div>
+
+          <!-- LISTA DE PISTAS
+               Cada .track-item se genera dinámicamente por JS desde el array TRACKS.
+               Este div actúa solo como contenedor. -->
+          <div class="track-list" id="trackList">
+            <!-- Las pistas se insertan aquí por script.js (Sección 11) -->
+          </div>
+
+        </div><!-- /sound-player -->
+
+        <!-- Elemento <audio> principal del reproductor (oculto) -->
+        <audio id="playerAudio" preload="none"></audio>
+
+      </div><!-- /gallery-block sonidos -->
+
 
     </section><!-- /gallery -->
 
@@ -457,11 +647,11 @@
                ╔═══════════════════════════════════╗
                ║  Cambia el href="#" por tu enlace ║
                ╚═══════════════════════════════════╝ -->
-          <a href="#" class="btn btn-primary pulse-btn">⬇ Descargar para PC</a>
+          <a href="https://github.com/moronlopezalvaro/Khaenriah/releases/tag/v1.0.0" class="btn btn-primary pulse-btn">⬇ Descargar para PC</a>
         </div>
 
         <!-- Nota de versión — actualiza el número de versión en cada parche -->
-        <p class="version-note">v0.9.1 BETA · Early Access · Gratuito</p>
+        <p class="version-note">v1.0.0 · Early Access · Gratuito</p>
 
       </div>
 
@@ -474,49 +664,26 @@
        FOOTER — Pie de página
   ══════════════════════════════════════ -->
   <footer id="footer">
-    <div class="footer-inner">
+    <!-- Footer con 2 columnas: enlaces del juego + newsletter
+         (Se eliminaron las columnas de marca/redes y comunidad) -->
+    <div class="footer-inner footer-inner-2col">
 
-      <!-- COLUMNA 1: MARCA Y REDES SOCIALES
-           Añade los href reales de cada red social -->
-      <div class="footer-brand">
-        <div class="logo">
-          <span class="logo-bracket">[</span>KHANERI'AH<span class="logo-bracket">]</span>
-        </div>
-        <p>Un bullet hell construido con pasión indie.<br/>Hecho con ♥ y demasiado café.</p>
-        <div class="social-links">
-          <a href="#" aria-label="Twitter/X"  class="social-btn">𝕏</a>
-          <a href="#" aria-label="Discord"    class="social-btn">◈</a>
-          <a href="#" aria-label="YouTube"    class="social-btn">▶</a>
-          <a href="#" aria-label="GitHub"     class="social-btn">⌥</a>
-        </div>
-      </div>
-
-      <!-- COLUMNA 2: ENLACES DEL JUEGO -->
+      <!-- COLUMNA 1: ENLACES DEL JUEGO
+           Añade o quita enlaces según la estructura del sitio. -->
       <div class="footer-links">
         <h4>Juego</h4>
         <ul>
           <li><a href="#features">Características</a></li>
-          <li><a href="#gallery">Capturas</a></li>
+          <li><a href="#gallery">Galería</a></li>
+          <li><a href="#soundplayer-block">Banda Sonora</a></li>
           <li><a href="#download">Descargar</a></li>
-          <!-- Enlace a página externa de notas de parche — añade href cuando exista -->
+          <!-- Reemplaza "#" por el enlace real a las notas del parche -->
           <li><a href="#">Notas del Parche</a></li>
         </ul>
       </div>
 
-      <!-- COLUMNA 3: ENLACES DE COMUNIDAD
-           Añade los href reales cuando las páginas existan -->
-      <div class="footer-links">
-        <h4>Comunidad</h4>
-        <ul>
-          <li><a href="#">Discord</a></li>
-          <li><a href="#">Bug Report</a></li>
-          <li><a href="#">Fan Art</a></li>
-          <li><a href="#">Contacto</a></li>
-        </ul>
-      </div>
-
-      <!-- COLUMNA 4: NEWSLETTER
-           La validación y el feedback visual del formulario están en script.js (sección 6) -->
+      <!-- COLUMNA 2: NEWSLETTER
+           La validación del formulario está en script.js (Sección 6). -->
       <div class="footer-newsletter">
         <h4>Boletín de Noticias</h4>
         <p>Recibe actualizaciones y acceso anticipado.</p>
@@ -542,6 +709,20 @@
 
   </footer>
 
+
+  <!-- ELEMENTOS DE AUDIO
+       Los sonidos no se reproducen hasta que el usuario interactúa.
+       Para añadir más sonidos: duplica un <audio> con el nuevo src.
+       La lógica de reproducción está en script.js (Sección 10 — AUDIO). -->
+
+  <!-- Música de fondo del menú/inicio (en loop) -->
+  <audio id="audioMusica" loop preload="none">
+    <source src="sonidos/MusicaInicio.wav" type="audio/wav"/>
+  </audio>
+
+  <!-- Efectos de sonido (SFX) — sin loop -->
+  <audio id="audioClick"   preload="none"><source src="sonidos/SonidoClick.wav"  type="audio/wav"/></audio>
+  <audio id="audioDisparo" preload="none"><source src="sonidos/Disparo.wav"      type="audio/wav"/></audio>
 
   <!-- SCRIPT PRINCIPAL (siempre al final del body) -->
   <script src="script.js"></script>
