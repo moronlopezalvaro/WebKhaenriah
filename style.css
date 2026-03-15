@@ -1,285 +1,1177 @@
-/* --- Variables y Reset --- */
+/* ================================================================
+   KHANERIAH — style.css
+   Estructura de este archivo:
+     1.  Variables (tokens de diseño)
+     2.  Reset y base
+     3.  Scrollbar personalizada
+     4.  Navbar
+     5.  Botones
+     6.  Etiquetas de sección y textos comunes
+     7.  Hero
+     8.  Tráiler
+     9.  Características (Features)
+     10. Galería (Screenshots + Sprites)
+     11. Sección Descarga
+     12. Footer
+     13. Animaciones de entrada (reveal)
+     14. Responsive / Media Queries
+================================================================ */
+
+
+/* ================================================================
+   1. VARIABLES — Tokens de diseño globales
+      Para cambiar la paleta de colores, edita solo esta sección.
+================================================================ */
 :root {
-    --color-bg-dark: #0d0912;
-    --color-bg-panel: #1c1322;
-    --color-bg-card: #2e1e35;
-    --color-text-main: #d8c3a5; /* Crema suave */
-    --color-accent-gold: #f7e6cc;
-    --color-border-gold: #b78a4b;
-    --color-shadow: #3b2a1a;
-    --font-pixel: 'VT323', monospace;
+  /* Fondos */
+  --bg:         #080608;            /* fondo principal oscuro */
+  --bg-2:       #0f0b10;            /* fondo alternativo ligeramente más claro */
+  --bg-card:    rgba(20, 12, 22, 0.75); /* fondo de tarjetas con transparencia */
+
+  /* Color naranja (acento principal) */
+  --orange:     #e87c2a;
+  --orange-dim: #b35a14;
+  --orange-glow:rgba(232, 124, 42, 0.35);
+
+  /* Color cian (acento secundario) */
+  --cyan:       #00e5ff;
+  --cyan-dim:   #007c8a;
+  --cyan-glow:  rgba(0, 229, 255, 0.25);
+
+  /* Color ámbar (acento terciario, degradados) */
+  --amber:      #ffb347;
+
+  /* Color rojo (jefe final / peligro) */
+  --red:        #ff4444;
+  --red-glow:   rgba(255, 68, 68, 0.3);
+
+  /* Texto */
+  --text:       #e8ddd0;            /* texto principal */
+  --text-dim:   #8a7a6a;            /* texto secundario / subtítulos */
+
+  /* Bordes */
+  --border:     rgba(232, 124, 42, 0.2);
+  --border-glow:rgba(232, 124, 42, 0.5);
+
+  /* Tipografías */
+  --font-pixel: 'Press Start 2P', monospace;   /* pixel art, títulos, etiquetas */
+  --font-body:  'Exo 2', sans-serif;            /* texto general */
+
+  /* Misc */
+  --radius:     4px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+
+/* ================================================================
+   2. RESET Y BASE
+================================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth; /* desplazamiento suave al hacer click en los enlaces de nav */
+  cursor: none; /* oculta el cursor del sistema en toda la página */
 }
 
 body {
-    font-family: var(--font-pixel);
-    color: var(--color-text-main);
-    background-color: var(--color-bg-dark);
-    font-size: 1.2rem;
-    line-height: 1.6;
-    overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden; /* evita scroll horizontal en móvil */
+  cursor: none; /* refuerza la ocultación del cursor en el body */
 }
 
-/* Crucial para mantener la nitidez del pixel art */
-img, .hero, .lore, .parallax {
-    image-rendering: pixelated; 
+/* Oculta el cursor del sistema en TODOS los elementos interactivos.
+   Sin esto, el cursor del sistema reaparecería al hacer hover sobre
+   enlaces, botones o cualquier elemento con cursor propio por defecto. */
+*, a, button, input, textarea, select, label,
+.feat-card, .gallery-item, .char-card,
+.trailer-frame, .social-btn, .btn-subscribe {
+  cursor: none !important;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* las imágenes siempre cubren su contenedor sin deformarse */
 }
 
-/* --- Botones --- */
-.btn-expedition {
-    display: inline-block;
-    background-color: var(--color-accent-gold);
-    color: var(--color-shadow);
-    padding: 10px 20px;
-    font-family: var(--font-pixel);
-    font-size: 1.3rem;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: 3px solid var(--color-border-gold);
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
-    transition: all 0.1s ease;
-    cursor: pointer;
+a  { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* Canvas del starfield: capa fija de fondo, no interfiere con clicks */
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.btn-expedition:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px rgba(0,0,0,1);
-    background-color: #fff;
+
+/* ================================================================
+   3. SCROLLBAR PERSONALIZADA (solo Webkit/Chrome/Edge)
+================================================================ */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--orange-dim); border-radius: 2px; }
+
+
+/* ================================================================
+   4. NAVBAR — Barra de navegación fija
+      .scrolled se añade via JS al superar 60px de scroll.
+================================================================ */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 clamp(1rem, 5vw, 3rem);
+  transition: var(--transition);
 }
 
-.btn-expedition:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px rgba(0,0,0,1);
+/* Estado tras hacer scroll: glassmorphism */
+#navbar.scrolled {
+  background: rgba(8, 6, 8, 0.85);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-.btn-large {
-    font-size: 1.8rem;
-    padding: 15px 30px;
+/* Contenedor interno con altura fija */
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
 }
 
-/* --- Navbar (Header) --- */
-header {
-    background-color: var(--color-bg-panel);
-    padding: 15px 0;
-    border-bottom: 4px solid var(--color-border-gold);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    transition: background-color 0.3s ease;
-}
-
-header.scrolled {
-    background-color: rgba(28, 19, 34, 0.95);
-    backdrop-filter: blur(5px);
-}
-
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
+/* Logo pixel art con glow naranja */
 .logo {
-    color: var(--color-accent-gold);
-    font-size: 2.5rem;
-    text-shadow: 3px 3px var(--color-shadow);
-    letter-spacing: 2px;
+  font-family: var(--font-pixel);
+  font-size: clamp(0.6rem, 1.4vw, 0.82rem);
+  letter-spacing: 0.05em;
+  color: var(--orange);
+  text-shadow: 0 0 20px var(--orange-glow), 0 0 40px var(--orange-glow);
+  white-space: nowrap;
 }
+.logo-bracket { color: var(--cyan); } /* los corchetes son cian */
 
+/* Lista de links de navegación */
 .nav-links {
-    display: flex;
-    gap: 25px;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
 }
 
-.nav-links a:not(.btn-expedition) {
-    color: var(--color-text-main);
-    text-decoration: none;
-    font-size: 1.4rem;
-    text-transform: uppercase;
-    transition: color 0.2s ease;
+/* Link individual */
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color var(--transition);
+  position: relative;
 }
 
-.nav-links a:not(.btn-expedition):hover {
-    color: var(--color-accent-gold);
+/* Subrayado animado al hover */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--orange);
+  transition: width var(--transition);
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Link de descarga: estilo de botón relleno naranja */
+.nav-cta {
+  background: var(--orange) !important;
+  color: var(--bg) !important;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  font-weight: 700 !important;
+  transition: transform var(--transition), box-shadow var(--transition) !important;
+}
+.nav-cta:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 20px var(--orange-glow) !important;
+}
+.nav-cta::after { display: none !important; } /* sin subrayado en el botón */
+
+/* Botón hamburguesa (visible solo en móvil, ver media queries) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--orange);
+  border-radius: 1px;
+  transition: var(--transition);
 }
 
-.menu-toggle {
-    display: none;
-    font-size: 2rem;
-    color: var(--color-accent-gold);
-    cursor: pointer;
+
+/* ================================================================
+   5. BOTONES
+      Variantes disponibles:
+        .btn-primary   → relleno naranja, efecto de luz al hover
+        .btn-secondary → borde cian, fondo transparente
+        .btn-outline   → borde sutil, se vuelve naranja al hover
+        .pulse-btn     → añade anillo pulsante (usado en descarga)
+================================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-3px); }
+
+/* Botón primario: gradiente naranja */
+.btn-primary {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--amber) 100%);
+  color: var(--bg);
+  box-shadow: 0 0 20px var(--orange-glow);
+}
+.btn-primary:hover {
+  box-shadow: 0 0 40px var(--orange-glow), 0 0 80px rgba(232, 124, 42, 0.2);
 }
 
-/* --- Secciones con Imágenes de Fondo --- */
-.hero, .lore, .features {
-    background-size: cover;
-    background-position: center;
-    position: relative;
+/* Destello de luz al pasar el cursor por el botón primario */
+.btn-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover .btn-glow { transform: translateX(100%); }
+
+/* Botón secundario: borde cian con brillo */
+.btn-secondary {
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow), inset 0 0 12px var(--cyan-glow);
+}
+.btn-secondary:hover {
+  background: rgba(0, 229, 255, 0.08);
+  box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 20px var(--cyan-glow);
 }
 
-.hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin-top: 70px; /* Compensa el navbar fijo */
+/* Botón de contorno sutil */
+.btn-outline {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-glow);
+}
+.btn-outline:hover {
+  color: var(--orange);
+  border-color: var(--orange);
+  box-shadow: 0 0 16px var(--orange-glow);
 }
 
-.lore {
-    padding: 120px 0;
-    border-top: 4px solid var(--color-border-gold);
-    border-bottom: 4px solid var(--color-border-gold);
-    text-align: center;
+/* Anillo pulsante (solo en el botón de descarga principal) */
+.pulse-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--orange), var(--amber));
+  z-index: -1;
+  animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0%   { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
 }
 
-.parallax {
-    background-attachment: fixed; /* Efecto Parallax */
-    padding: 120px 0;
+
+/* ================================================================
+   6. ETIQUETAS DE SECCIÓN Y TEXTOS COMUNES
+================================================================ */
+
+/* Etiqueta pequeña tipo código: "// CARACTERÍSTICAS" */
+.section-label {
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+  opacity: 0.7;
 }
 
-/* Overlays para oscurecer las imágenes y que el texto se lea bien */
-.hero-overlay, .lore-overlay, .features-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 1;
+/* Bloque de título de sección */
+.section-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.section-header h2 {
+  font-family: var(--font-pixel);
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+.section-header p {
+  color: var(--text-dim);
+  font-size: 1rem;
 }
 
-.hero-overlay { background-color: rgba(0, 0, 0, 0.3); }
-.lore-overlay { background-color: rgba(13, 9, 18, 0.7); }
-.features-overlay { background-color: rgba(28, 19, 34, 0.8); }
-
-.hero-content, .lore-content, .features-content {
-    position: relative;
-    z-index: 2;
+/* Texto con degradado naranja→ámbar→cian */
+.gradient-text {
+  background: linear-gradient(90deg, var(--orange) 0%, var(--amber) 60%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* --- Tipografía de Secciones --- */
-h2, h3 {
-    color: var(--color-accent-gold);
-    text-shadow: 4px 4px var(--color-shadow);
-    letter-spacing: 2px;
+
+/* ================================================================
+   7. HERO — Sección principal de bienvenida
+================================================================ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 1.5rem 5rem;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.hero h2 { font-size: 4rem; margin-bottom: 20px; }
-.hero p { font-size: 1.8rem; max-width: 700px; margin: 0 auto 40px auto; text-shadow: 2px 2px #000; }
+/* Imagen de fondo del planeta con animación de deriva */
+.hero-bg-planet {
+  position: absolute;
+  inset: 0;
+  background-image: url('planeta.jpg'); /* cambia aquí la imagen de fondo del hero */
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0.18;
+  filter: saturate(0.8);
+  animation: hero-drift 30s ease-in-out infinite alternate;
+  transition: transform 0.1s ease; /* para el parallax con el ratón */
+}
+/* Deriva suave vertical del fondo */
+@keyframes hero-drift {
+  from { background-position: center 30%; }
+  to   { background-position: center 45%; }
+}
 
-.lore h3 { font-size: 3.5rem; margin-bottom: 30px; }
-.lore p { font-size: 1.6rem; max-width: 800px; margin: 0 auto 20px auto; }
+/* Viñeta: oscurece los bordes para centrar la atención en el contenido */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 80%, transparent 40%, var(--bg) 100%),
+    radial-gradient(ellipse 80% 50% at 50% 0%,  transparent 30%, var(--bg) 100%);
+  z-index: 0;
+}
 
-.features h3 { font-size: 3.5rem; text-align: center; margin-bottom: 60px; }
+/* Líneas de escáner (scanlines): efecto CRT/retro */
+#hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.07) 3px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  z-index: 0;
+  pointer-events: none;
+}
 
-/* --- Grid de Características --- */
+/* Contenido del hero siempre encima de los efectos de fondo */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+}
+
+/* Texto pequeño sobre el título */
+.hero-eyebrow {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+/* Título principal con efecto de parpadeo suave */
+.hero-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(1.4rem, 5vw, 3.2rem);
+  line-height: 1.35;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 60px rgba(232, 124, 42, 0.3);
+  animation: title-flicker 6s ease-in-out infinite;
+}
+/* Parpadeo muy sutil para simular pantalla CRT */
+@keyframes title-flicker {
+  0%, 95%, 100% { opacity: 1; }
+  97%            { opacity: 0.92; }
+  98%            { opacity: 1; }
+  99%            { opacity: 0.88; }
+}
+
+/* Subtítulo del hero */
+.hero-sub {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--text-dim);
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+}
+
+/* Contenedor de los dos botones CTA */
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+}
+
+/* Fila de estadísticas bajo los botones */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.stat-num {
+  font-family: var(--font-pixel);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--orange);
+  text-shadow: 0 0 20px var(--orange-glow);
+}
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+/* Separador vertical entre estadísticas */
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+/* Indicador de scroll animado (parte inferior del hero) */
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 2;
+  opacity: 0.4;
+  animation: fade-pulse 2s ease-in-out infinite;
+}
+.scroll-hint span {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  letter-spacing: 0.2em;
+}
+/* Flecha girada 45° que rebota */
+.scroll-arrow {
+  width: 10px; height: 10px;
+  border-right: 1px solid var(--text);
+  border-bottom: 1px solid var(--text);
+  transform: rotate(45deg);
+  animation: scroll-bounce 1.5s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50%       { transform: rotate(45deg) translateY(4px); }
+}
+@keyframes fade-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.7; }
+}
+
+
+/* ================================================================
+   8. TRÁILER
+================================================================ */
+.trailer-section {
+  position: relative;
+  z-index: 1;
+  padding: 5rem clamp(1rem, 5vw, 4rem);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Marco del vídeo */
+.trailer-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: rgba(10, 5, 12, 0.9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow var(--transition);
+}
+.trailer-frame:hover {
+  box-shadow: 0 0 50px var(--orange-glow);
+}
+
+/* Placeholder del vídeo (reemplazar por iframe de YouTube) */
+.trailer-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: radial-gradient(ellipse at center, rgba(232, 124, 42, 0.08) 0%, transparent 70%);
+}
+/* Círculo del botón play */
+.play-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--orange);
+  box-shadow: 0 0 30px var(--orange-glow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.trailer-frame:hover .play-icon {
+  transform: scale(1.12);
+  box-shadow: 0 0 60px var(--orange-glow);
+}
+.trailer-placeholder p {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+/* Decoradores de esquina pixel art */
+.trailer-corner {
+  position: absolute;
+  width: 18px; height: 18px;
+}
+.trailer-corner.tl { top: 0;    left: 0;  border-top: 2px solid var(--orange); border-left: 2px solid var(--orange); }
+.trailer-corner.tr { top: 0;    right: 0; border-top: 2px solid var(--orange); border-right: 2px solid var(--orange); }
+.trailer-corner.bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--orange); border-left: 2px solid var(--orange); }
+.trailer-corner.br { bottom: 0; right: 0; border-bottom: 2px solid var(--orange); border-right: 2px solid var(--orange); }
+
+
+/* ================================================================
+   9. CARACTERÍSTICAS (FEATURES)
+      Grid de 3 columnas que se reduce a 2 y luego a 1 en móvil.
+================================================================ */
+#features {
+  position: relative;
+  z-index: 1;
+  padding: 6rem clamp(1rem, 5vw, 4rem);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
 .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
-.feature-item {
-    background-color: rgba(46, 30, 53, 0.9);
-    padding: 30px;
-    border: 3px solid var(--color-border-gold);
-    text-align: center;
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.6);
-    transition: transform 0.2s ease;
+/* Tarjeta individual */
+.feat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(8px);
 }
 
-.feature-item:hover {
-    transform: translateY(-10px);
+/* Línea naranja superior que aparece en hover */
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.feat-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-glow);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.4), 0 0 30px var(--orange-glow);
+}
+.feat-card:hover::before { opacity: 1; }
+
+/* Icono SVG de cada tarjeta */
+.feat-icon {
+  width: 52px; height: 52px;
+  color: var(--orange);
+  margin-bottom: 1.25rem;
+  transition: color var(--transition), filter var(--transition);
+}
+.feat-card:hover .feat-icon {
+  color: var(--amber);
+  filter: drop-shadow(0 0 8px var(--orange));
+}
+.feat-icon svg { width: 100%; height: 100%; }
+
+.feat-card h3 {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.05em;
+}
+.feat-card p {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+/* Etiqueta inferior de la tarjeta (ej: "BOSS FIGHT · LVL 10") */
+.feat-tag {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--cyan);
+  border: 1px solid var(--cyan-dim);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
 }
 
-.feature-icon {
-    font-size: 3rem;
-    color: var(--color-accent-gold);
-    margin-bottom: 20px;
-    text-shadow: 2px 2px var(--color-shadow);
+
+/* ================================================================
+   10. GALERÍA
+       Se divide en:
+         .gallery-grid   → screenshots del juego
+         .sprites-grid   → tarjetas de personajes
+================================================================ */
+#gallery {
+  position: relative;
+  z-index: 1;
+  padding: 6rem clamp(1rem, 5vw, 4rem);
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
-.feature-item h4 {
-    font-size: 2rem;
-    color: var(--color-accent-gold);
-    margin-bottom: 10px;
+/* Subtítulos intermedios de la galería ("Escenarios", "Personajes") */
+.gallery-subtitle {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--orange);
+  letter-spacing: 0.12em;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
 }
 
-/* --- Footer --- */
-footer {
-    background-color: var(--color-bg-dark);
-    padding: 40px 0;
-    border-top: 4px solid var(--color-border-gold);
+/* ── GRID DE SCREENSHOTS ── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 4rem; /* espacio antes de la subsección de sprites */
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+/* Item normal de la galería */
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+/* Item ancho: ocupa 2 columnas del grid */
+.gi-wide {
+  grid-column: span 2;
+  aspect-ratio: 16 / 7;
 }
 
-.footer-info p { margin-top: 10px; }
-
-.social-links {
-    display: flex;
-    gap: 20px;
+/* Zoom suave e imagen más brillante al hover */
+.gallery-item img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+  filter: saturate(0.9) brightness(0.85);
+}
+.gallery-item:hover img {
+  transform: scale(1.06);
+  filter: saturate(1.1) brightness(1);
 }
 
-.social-links a {
-    color: var(--color-text-main);
-    font-size: 2rem;
-    transition: color 0.2s ease;
+/* Overlay con nombre de la captura, aparece al hover */
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(8, 6, 8, 0.85) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem 1.25rem;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay span {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--orange);
+  letter-spacing: 0.08em;
 }
 
-.social-links a:hover { color: var(--color-accent-gold); }
-
-/* --- Animaciones JS --- */
-.fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+/* ── GRID DE SPRITES DE PERSONAJES ── */
+.sprites-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 personajes en fila */
+  gap: 1.5rem;
 }
 
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
+/* Tarjeta individual de personaje */
+.sprite-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(8px);
+}
+.sprite-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-glow);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--orange-glow);
 }
 
-/* --- Responsive --- */
+/* Tarjeta especial del jefe final: borde rojo */
+.sprite-boss {
+  border-color: rgba(255, 68, 68, 0.4);
+}
+.sprite-boss:hover {
+  border-color: var(--red);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--red-glow);
+}
+
+/* Contenedor cuadrado de la imagen del sprite */
+.sprite-img-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sprite-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* contain para que el sprite no se recorte */
+  transition: transform 0.5s ease;
+  image-rendering: pixelated; /* mantiene la nitidez del pixel art */
+}
+.sprite-card:hover .sprite-img-wrap img {
+  transform: scale(1.08);
+}
+
+/* Bloque de texto bajo la imagen del sprite */
+.sprite-info {
+  padding: 1.25rem;
+}
+.sprite-info h4 {
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.sprite-info p {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 0.85rem;
+}
+/* Etiqueta de oleada en los personajes normales */
+.sprite-tag {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  color: var(--cyan);
+  border: 1px solid var(--cyan-dim);
+  padding: 0.25rem 0.55rem;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+/* Etiqueta roja especial para el jefe */
+.boss-tag {
+  color: var(--red);
+  border-color: rgba(255, 68, 68, 0.5);
+}
+/* Insignia "JEFE" inline en el h4 del boss */
+.boss-badge {
+  font-size: 0.4rem;
+  background: var(--red);
+  color: #fff;
+  padding: 0.2rem 0.45rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 6px var(--red-glow); }
+  50%       { box-shadow: 0 0 18px var(--red-glow); }
+}
+
+
+/* ================================================================
+   11. SECCIÓN DESCARGA (DOWNLOAD CTA)
+================================================================ */
+.download-section {
+  position: relative;
+  z-index: 1;
+  padding: 8rem clamp(1rem, 5vw, 4rem);
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Fondo decorativo: imagen de la superficie del planeta, muy tenue */
+.download-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('fondo_planeta.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  filter: saturate(0.5);
+}
+
+/* Viñeta sobre el fondo */
+.download-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 50% 50%, transparent 30%, var(--bg) 100%);
+}
+
+/* Contenido sobre los fondos */
+.download-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.download-content h2 {
+  font-family: var(--font-pixel);
+  font-size: clamp(1rem, 3vw, 2rem);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+.download-content > p {
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+}
+.download-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+/* Nota de versión pequeña */
+.version-note {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+
+/* ================================================================
+   12. FOOTER
+================================================================ */
+#footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  background: rgba(5, 3, 6, 0.8);
+}
+
+/* Grid principal del footer: 4 columnas en escritorio */
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4rem clamp(1rem, 5vw, 4rem) 3rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr;
+  gap: 3rem;
+}
+
+/* Columna de marca */
+.footer-brand .logo { margin-bottom: 1rem; }
+.footer-brand p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.social-links { display: flex; gap: 0.75rem; }
+.social-btn {
+  width: 38px; height: 38px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  transition: var(--transition);
+}
+.social-btn:hover {
+  color: var(--orange);
+  border-color: var(--orange);
+  box-shadow: 0 0 12px var(--orange-glow);
+}
+
+/* Columnas de links del footer */
+.footer-links h4 {
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--orange);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.25rem;
+}
+.footer-links ul { display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-links a {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--text); }
+
+/* Columna del newsletter */
+.footer-newsletter h4 {
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--orange);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+}
+.footer-newsletter > p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.newsletter-form {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.newsletter-form:focus-within {
+  border-color: var(--orange);
+  box-shadow: 0 0 16px var(--orange-glow);
+}
+.newsletter-form input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  outline: none;
+}
+.newsletter-form input::placeholder { color: var(--text-dim); }
+.btn-subscribe {
+  background: var(--orange);
+  border: none;
+  padding: 0 1.2rem;
+  color: var(--bg);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.btn-subscribe:hover { background: var(--amber); }
+.newsletter-note {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 0.6rem;
+  opacity: 0.7;
+}
+
+/* Barra inferior: copyright y links legales */
+.footer-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 5vw, 4rem);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { color: var(--text-dim); transition: color var(--transition); }
+.footer-legal a:hover { color: var(--orange); }
+
+
+/* ================================================================
+   13. ANIMACIONES DE ENTRADA (REVEAL ON SCROLL)
+       Los elementos con clase .reveal empiezan invisibles y
+       se animan al entrar al viewport gracias al IntersectionObserver
+       de script.js (sección 4).
+       El retraso se controla con la custom property --delay en el HTML.
+================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition-delay: var(--delay, 0s); /* si no se define --delay, usa 0s */
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ================================================================
+   14. RESPONSIVE / MEDIA QUERIES
+       Breakpoints:
+         ≤ 1100px → sprites 2 columnas
+         ≤ 1024px → features 2 col, footer 2 col
+         ≤ 768px  → menú hamburger, features/gallery 1-2 col
+         ≤ 520px  → todo a 1 columna
+================================================================ */
+
+/* Sprites: de 4 a 2 columnas en pantallas medianas */
+@media (max-width: 1100px) {
+  .sprites-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Features y footer a 2 columnas */
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner  { grid-template-columns: 1fr 1fr; }
+}
+
+/* Menú hamburger + ajustes de grid medianos */
 @media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: var(--color-bg-panel);
-        border-bottom: 4px solid var(--color-border-gold);
-        padding: 20px 0;
-    }
+  /* Mostrar hamburger */
+  .hamburger { display: flex; }
 
-    .nav-links.active { display: flex; }
-    .menu-toggle { display: block; }
-    
-    .hero h2 { font-size: 3rem; }
-    .parallax { background-attachment: scroll; /* Desactiva parallax en móviles por rendimiento */ }
-    
-    .footer-content { flex-direction: column; text-align: center; justify-content: center; }
+  /* Menú desplegable desde arriba */
+  .nav-links {
+    position: fixed;
+    top: 68px; left: 0; right: 0;
+    flex-direction: column;
+    background: rgba(8, 6, 8, 0.97);
+    backdrop-filter: blur(16px);
+    padding: 2rem;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    /* Estado inicial: oculto hacia arriba */
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--transition), opacity var(--transition);
+    z-index: 99;
+  }
+  /* Estado abierto (clase añadida por JS) */
+  .nav-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Features a 1 columna */
+  .features-grid { grid-template-columns: 1fr; }
+
+  /* Gallery screenshots: 2 col */
+  .gallery-grid  { grid-template-columns: 1fr 1fr; }
+  .gi-wide       { grid-column: span 2; }
+
+  /* Sprites: 2 col ya definido en 1100px, mantener */
+  .sprites-grid  { grid-template-columns: repeat(2, 1fr); }
+
+  /* Footer: 2 col */
+  .footer-inner        { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .footer-brand        { grid-column: span 2; }
+  .footer-newsletter   { grid-column: span 2; }
+}
+
+/* Todo a 1 columna en móviles pequeños */
+@media (max-width: 520px) {
+  /* Gallery a 1 col */
+  .gallery-grid          { grid-template-columns: 1fr; }
+  .gi-wide               { grid-column: span 1; aspect-ratio: 4 / 3; }
+
+  /* Sprites a 1 col */
+  .sprites-grid          { grid-template-columns: 1fr; }
+
+  /* Footer a 1 col */
+  .footer-inner          { grid-template-columns: 1fr; }
+  .footer-brand          { grid-column: span 1; }
+  .footer-newsletter     { grid-column: span 1; }
+
+  /* Stats del hero más compactas */
+  .hero-stats { gap: 1.2rem; }
+  .stat-divider { height: 30px; }
+
+  /* Footer bottom apilado */
+  .footer-bottom { flex-direction: column; text-align: center; }
 }

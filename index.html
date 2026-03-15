@@ -1,93 +1,550 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KHAENRI'AH | Expedición Desolada</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ══ TÍTULO DE LA PESTAÑA ══ -->
+  <title>Khaneri'ah — Space Shooter</title>
+
+  <!-- ══ FUENTES DE GOOGLE ══
+       Press Start 2P → títulos y etiquetas pixel art
+       Exo 2          → texto general, párrafos, botones -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ══ HOJA DE ESTILOS PRINCIPAL ══ -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <header id="navbar">
-        <div class="container nav-container">
-            <h1 class="logo">KHAENRI'AH</h1>
-            <nav class="nav-links">
-                <a href="#hero">Misión</a>
-                <a href="#lore">El Planeta</a>
-                <a href="#features">Supervivencia</a>
-                <a href="#join" class="btn-expedition">Registrarse</a>
-            </nav>
-            <div class="menu-toggle" id="mobile-menu">
-                <i class="fa-solid fa-bars"></i>
-            </div>
+  <!-- ══════════════════════════════════════
+       CANVAS — CAMPO DE ESTRELLAS ANIMADO
+       Generado completamente en script.js (sección 1).
+       No editar este elemento directamente.
+  ══════════════════════════════════════ -->
+  <canvas id="starfield"></canvas>
+
+
+  <!-- ══════════════════════════════════════
+       NAVBAR — Barra de navegación fija superior
+       Clase .scrolled se añade via JS (sección 2) al hacer scroll
+       para activar el efecto glassmorphism.
+  ══════════════════════════════════════ -->
+  <header id="navbar">
+    <nav class="nav-inner">
+
+      <!-- LOGO: texto del juego a la izquierda -->
+      <a href="#hero" class="logo">
+        <span class="logo-bracket">[</span>KHANERI'AH<span class="logo-bracket">]</span>
+      </a>
+
+      <!-- HAMBURGER: visible solo en móvil. Lógica en script.js (sección 3) -->
+      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- LINKS DE NAVEGACIÓN
+           En móvil se ocultan hasta que se pulse el hamburger.
+           El enlace .nav-cta tiene estilo de botón destacado. -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero">Inicio</a></li>
+        <li><a href="#features">Características</a></li>
+        <li><a href="#gallery">Galería</a></li>
+        <li><a href="#download" class="nav-cta">Descargar</a></li>
+      </ul>
+
+    </nav>
+  </header>
+
+
+  <main>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN: HERO
+         Pantalla principal de bienvenida.
+         El fondo del planeta tiene parallax suave con el ratón (script.js sección 7).
+    ══════════════════════════════════════ -->
+    <section id="hero">
+
+      <!-- FONDO: imagen del planeta con efecto parallax.
+           La imagen se define en CSS (.hero-bg-planet) como background-image.
+           Para cambiarla, edita la propiedad background-image en style.css. -->
+      <div class="hero-bg-planet"></div>
+
+      <!-- CONTENIDO CENTRAL DEL HERO -->
+      <div class="hero-content reveal">
+
+        <!-- Etiqueta pequeña sobre el título principal -->
+        <p class="hero-eyebrow">— NUEVO LANZAMIENTO 2026 —</p>
+
+        <!-- TÍTULO PRINCIPAL
+             Tiene efecto glitch aleatorio activado en script.js (sección 9).
+             La clase .gradient-text aplica el gradiente naranja→cian. -->
+        <h1 class="hero-title">
+          Descubre el<br/>
+          <span class="gradient-text">misterio de</span><br/>
+          Khaneri'ah
+        </h1>
+
+        <!-- SUBTÍTULO: descripción corta y honesta del juego -->
+        <p class="hero-sub">
+          Un bullet hell sin cuartel. Una nave, un piloto, nueve oleadas implacables
+          y una batalla final que decidirá el destino de la galaxia.<br/>
+          ¿Cuánto tiempo sobrevivirás?
+        </p>
+
+        <!-- BOTONES DE ACCIÓN PRINCIPALES -->
+        <div class="hero-buttons">
+          <!-- Botón primario: lleva a la sección de descarga -->
+          <a href="#download" class="btn btn-primary">
+            <span class="btn-glow"></span>
+            ⬇ Jugar Gratis
+          </a>
+          <!-- Botón secundario: lleva a la sección del tráiler -->
+          <a href="#trailer" class="btn btn-secondary">
+            ▶ Ver Tráiler
+          </a>
         </div>
-    </header>
 
-    <main>
-        <section id="hero" class="hero" style="background-image: url('portada.jpg');">
-            <div class="hero-overlay"></div>
-            <div class="hero-content container fade-in">
-                <h2>Sobrevive a la Devastación</h2>
-                <p>Descubre los secretos de una civilización perdida en un mundo desolado.</p>
-                <a href="#join" class="btn-expedition btn-large">ÚNETE A LA EXPEDICIÓN</a>
-            </div>
-        </section>
-
-        <section id="lore" class="lore" style="background-image: url('planeta.jpg');">
-            <div class="lore-overlay"></div>
-            <div class="container lore-content fade-in">
-                <h3>UN MUNDO HECHO PEDAZOS</h3>
-                <p>Un planeta despojado de su núcleo, orbitado por sus propios escombros. Atraviesa los vastos y desolados paisajes de Khaenri'ah.</p>
-                <p>Descubre puestos de avanzada olvidados y las antiguas reliquias de una civilización perdida. La supervivencia es el único objetivo en este implacable desierto estelar.</p>
-            </div>
-        </section>
-
-        <section id="features" class="features parallax" style="background-image: url('fondo\ planeta.jpg');">
-            <div class="features-overlay"></div>
-            <div class="container features-content">
-                <h3 class="fade-in">OBJETIVOS DE LA EXPEDICIÓN</h3>
-                <div class="features-grid">
-                    <div class="feature-item fade-in">
-                        <div class="feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                        <h4>EXPLORA</h4>
-                        <p>Atraviesa infinitos paisajes en ruinas y desiertos de arena roja.</p>
-                    </div>
-                    <div class="feature-item fade-in" style="transition-delay: 0.1s;">
-                        <div class="feature-icon"><i class="fa-solid fa-hammer"></i></div>
-                        <h4>EXCAVA</h4>
-                        <p>Desentierra artefactos antiguos y tecnología olvidada.</p>
-                    </div>
-                    <div class="feature-item fade-in" style="transition-delay: 0.2s;">
-                        <div class="feature-icon"><i class="fa-solid fa-campground"></i></div>
-                        <h4>CONSTRUYE</h4>
-                        <p>Establece puestos de avanzada seguros en el páramo.</p>
-                    </div>
-                    <div class="feature-item fade-in" style="transition-delay: 0.3s;">
-                        <div class="feature-icon"><i class="fa-solid fa-skull"></i></div>
-                        <h4>SOBREVIVE</h4>
-                        <p>Enfréntate a los peligros monstruosos que acechan en las dunas.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container footer-content">
-            <div class="footer-info">
-                <h2 class="logo">KHAENRI'AH</h2>
-                <p>&copy; 2026 Expedition Corps. Todos los derechos reservados.</p>
-            </div>
-            <div class="social-links">
-                <a href="#"><i class="fa-brands fa-discord"></i></a>
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#"><i class="fa-brands fa-reddit-alien"></i></a>
-            </div>
+        <!-- ESTADÍSTICAS RÁPIDAS DEL JUEGO
+             Actualiza los números .stat-num si los datos del juego cambian. -->
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-num">1</span>
+            <span class="stat-label">Jefe Final</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num">9</span>
+            <span class="stat-label">Oleadas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num">4</span>
+            <span class="stat-label">Pistas OST</span>
+          </div>
         </div>
-    </footer>
 
-    <script src="script.js"></script>
+      </div><!-- /hero-content -->
+
+      <!-- INDICADOR DE SCROLL (animación CSS, style.css) -->
+      <div class="scroll-hint">
+        <span>SCROLL</span>
+        <div class="scroll-arrow"></div>
+      </div>
+
+    </section><!-- /hero -->
+
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN: TRÁILER
+         Cuando tengas el vídeo listo, sustituye .trailer-placeholder por:
+         <iframe width="100%" height="100%"
+           src="https://www.youtube.com/embed/TU_ID_AQUI"
+           frameborder="0" allowfullscreen></iframe>
+    ══════════════════════════════════════ -->
+    <section id="trailer" class="trailer-section">
+
+      <div class="section-label">// TRÁILER OFICIAL</div>
+
+      <div class="trailer-frame reveal">
+
+        <!-- PLACEHOLDER DE VÍDEO — reemplazar con iframe de YouTube -->
+        <div class="trailer-placeholder">
+          <div class="play-icon">▶</div>
+          <p>Gameplay Trailer — 2026</p>
+        </div>
+
+        <!-- Esquinas decorativas pixel art (solo CSS, no editar) -->
+        <div class="trailer-corner tl"></div>
+        <div class="trailer-corner tr"></div>
+        <div class="trailer-corner bl"></div>
+        <div class="trailer-corner br"></div>
+
+      </div>
+
+    </section><!-- /trailer -->
+
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN: CARACTERÍSTICAS (FEATURES)
+         Grid de 3 columnas. Para añadir una tarjeta: copia un .feat-card completo.
+         Para reordenar la animación de entrada, cambia el valor de --delay en el style.
+    ══════════════════════════════════════ -->
+    <section id="features">
+
+      <div class="section-label">// CARACTERÍSTICAS</div>
+
+      <div class="section-header reveal">
+        <h2>Por qué <span class="gradient-text">Khaneri'ah</span> te enganchará</h2>
+        <p>Diseñado para el jugador que exige más.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <!-- ── TARJETA 1: COMBATES ── -->
+        <div class="feat-card reveal">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 4L28 16H40L30 24L34 36L24 28L14 36L18 24L8 16H20L24 4Z"
+                    stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="24" cy="24" r="4" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Combates Épicos</h3>
+          <!-- Descripción de la característica — editar aquí -->
+          <p>Nueve oleadas de enemigos con patrones únicos antes de enfrentarte
+             al jefe final en el nivel 10. Cada partida te pondrá al límite.</p>
+          <div class="feat-tag">BOSS FIGHT · LVL 10</div>
+        </div>
+
+        <!-- ── TARJETA 2: NAVE ── -->
+        <div class="feat-card reveal" style="--delay: 0.15s">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 8L38 36H10L24 8Z" stroke="currentColor" stroke-width="2"
+                    stroke-linejoin="round"/>
+              <path d="M16 28H32" stroke="currentColor" stroke-width="2"/>
+              <path d="M20 20H28" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="38" r="3" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Tu Nave, tu Leyenda</h3>
+          <p>Una sola nave. Una sola vida. Domina sus capacidades al máximo para
+             superar los desafíos que te esperan en el espacio profundo.</p>
+          <div class="feat-tag">SINGLE SHIP</div>
+        </div>
+
+        <!-- ── TARJETA 3: BANDA SONORA ── -->
+        <div class="feat-card reveal" style="--delay: 0.3s">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 32C8 32 12 20 24 20C36 20 40 32 40 32"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 28C14 28 17 18 24 18C31 18 34 28 34 28"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="24" cy="14" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M24 36V42M20 42H28" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Banda Sonora Original</h3>
+          <p>4 pistas originales compuestas para cada fase del juego. Una experiencia
+             audiovisual diseñada para mantenerte en tensión constante.</p>
+          <div class="feat-tag">4 OST TRACKS</div>
+        </div>
+
+        <!-- ── TARJETA 4: BULLET HELL ── -->
+        <div class="feat-card reveal" style="--delay: 0.1s">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="10" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="3" fill="currentColor"/>
+              <path d="M24 6V10M24 38V42M6 24H10M38 24H42"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Bullet Hell Puro</h3>
+          <p>Esquiva oleadas de proyectiles en patrones diseñados para ponerte al límite.
+             Reflejos, concentración y precisión son tus únicas armas.</p>
+          <div class="feat-tag">BULLET HELL</div>
+        </div>
+
+        <!-- ── TARJETA 5: ENEMIGOS ── -->
+        <div class="feat-card reveal" style="--delay: 0.25s">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="14" r="7" stroke="currentColor" stroke-width="2"/>
+              <path d="M10 40C10 32.268 16.268 26 24 26C31.732 26 38 32.268 38 40"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Enemigos Únicos</h3>
+          <p>Champi, Coloson, Geocentinela y el temible Zaroth. Cada enemigo con
+             comportamiento propio, sprites animados y ataques exclusivos.</p>
+          <div class="feat-tag">4 ENEMIES</div>
+        </div>
+
+        <!-- ── TARJETA 6: PIXEL ART ── -->
+        <div class="feat-card reveal" style="--delay: 0.4s">
+          <div class="feat-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6"  y="6"  width="8" height="8" fill="currentColor" rx="1"/>
+              <rect x="20" y="6"  width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="34" y="6"  width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="6"  y="20" width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="currentColor" rx="1"/>
+              <rect x="34" y="20" width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="6"  y="34" width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="20" y="34" width="8" height="8" stroke="currentColor" stroke-width="2" rx="1"/>
+              <rect x="34" y="34" width="8" height="8" fill="currentColor" rx="1"/>
+            </svg>
+          </div>
+          <h3>Pixel Art Cinemático</h3>
+          <p>Arte pixel dibujado a mano, inspirado en los clásicos de los 90 con una
+             presentación oscura y épica que define la galaxia Khaneri'ah.</p>
+          <div class="feat-tag">PIXEL ART</div>
+        </div>
+
+      </div><!-- /features-grid -->
+
+    </section><!-- /features -->
+
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN: GALERÍA
+         Dividida en dos subsecciones:
+           A) .gallery-grid   → screenshots del juego
+           B) .sprites-grid   → sprites de los 4 personajes
+    ══════════════════════════════════════ -->
+    <section id="gallery">
+
+      <div class="section-label">// GALERÍA</div>
+
+      <div class="section-header reveal">
+        <h2>Capturas del <span class="gradient-text">campo de batalla</span></h2>
+      </div>
+
+      <!-- ─────────────────────────────────────
+           SUBSECCIÓN A: SCREENSHOTS DEL JUEGO
+           Clases de item disponibles:
+             .gallery-item        → tamaño normal (1 columna)
+             .gallery-item.gi-wide → ancho doble (2 columnas)
+           Para añadir más capturas: copia un .gallery-item y cambia el src.
+           Los placeholders tienen formato: placehold.co/WIDTHxHEIGHT/BG/TEXT
+      ───────────────────────────────────────── -->
+      <h3 class="gallery-subtitle reveal">Escenarios</h3>
+
+      <div class="gallery-grid reveal">
+
+        <!-- Screenshot 1: Fondo del planeta (imagen real subida por el usuario) -->
+        <div class="gallery-item gi-wide">
+          <img src="fondo_planeta.jpg" alt="Superficie del planeta Khaneri'ah" loading="lazy"/>
+          <div class="gallery-overlay"><span>Superficie de Khaneri'ah</span></div>
+        </div>
+
+        <!-- Screenshot 2: Vista orbital (imagen real subida por el usuario) -->
+        <div class="gallery-item">
+          <img src="planeta.jpg" alt="Vista orbital del planeta" loading="lazy"/>
+          <div class="gallery-overlay"><span>Vista Orbital</span></div>
+        </div>
+
+        <!-- Screenshot 3: PLACEHOLDER — reemplaza con captura real del jefe final -->
+        <div class="gallery-item">
+          <img src="https://placehold.co/600x450/1a0a0a/e87c2a?text=Boss+Fight+Lvl+10"
+               alt="Batalla contra Zaroth en el nivel 10" loading="lazy"/>
+          <div class="gallery-overlay"><span>Zaroth — Nivel 10</span></div>
+        </div>
+
+        <!-- Screenshot 4: PLACEHOLDER — reemplaza con captura de oleada bullet hell -->
+        <div class="gallery-item">
+          <img src="https://placehold.co/600x450/0a0a1a/00e5ff?text=Bullet+Hell+Oleada"
+               alt="Oleada de disparos" loading="lazy"/>
+          <div class="gallery-overlay"><span>Oleada Bullet Hell</span></div>
+        </div>
+
+        <!-- Screenshot 5: PLACEHOLDER — reemplaza con captura de la oleada 9 -->
+        <div class="gallery-item gi-wide">
+          <img src="https://placehold.co/1200x500/0d0d0d/e87c2a?text=Oleada+9+—+La+Última"
+               alt="Oleada 9 — la última antes del jefe" loading="lazy"/>
+          <div class="gallery-overlay"><span>Oleada 9 — La Última</span></div>
+        </div>
+
+      </div><!-- /gallery-grid (screenshots) -->
+
+
+      <!-- ─────────────────────────────────────
+           SUBSECCIÓN B: SPRITES DE PERSONAJES
+           Para añadir un personaje: copia un .sprite-card completo.
+           Para el jefe final usa la clase adicional .sprite-boss (borde rojo).
+           Reemplaza los src de los <img> con los sprites reales del juego.
+      ───────────────────────────────────────── -->
+      <h3 class="gallery-subtitle reveal" style="--delay: 0.1s">Personajes</h3>
+
+      <div class="sprites-grid reveal" style="--delay: 0.15s">
+
+        <!-- ── PERSONAJE 1: CHAMPI ──
+             Reemplaza src con el sprite real de Champi -->
+        <div class="sprite-card">
+          <div class="sprite-img-wrap">
+            <img src="https://placehold.co/200x200/120a08/e87c2a?text=CHAMPI"
+                 alt="Sprite de Champi" loading="lazy"/>
+          </div>
+          <div class="sprite-info">
+            <h4>Champi</h4>
+            <!-- Descripción breve del personaje — editar aquí -->
+            <p>Enemigo veloz de las primeras oleadas. Sus esporas explosivas cubren el campo en segundos.</p>
+            <div class="sprite-tag">OLEADAS 1–3</div>
+          </div>
+        </div>
+
+        <!-- ── PERSONAJE 2: COLOSON ──
+             Reemplaza src con el sprite real de Coloson -->
+        <div class="sprite-card">
+          <div class="sprite-img-wrap">
+            <img src="https://placehold.co/200x200/080a12/00e5ff?text=COLOSON"
+                 alt="Sprite de Coloson" loading="lazy"/>
+          </div>
+          <div class="sprite-info">
+            <h4>Coloson</h4>
+            <!-- Descripción breve del personaje — editar aquí -->
+            <p>Coloso mecánico de oleadas intermedias. Dispara en ráfagas precisas y es muy resistente.</p>
+            <div class="sprite-tag">OLEADAS 4–6</div>
+          </div>
+        </div>
+
+        <!-- ── PERSONAJE 3: GEOCENTINELA ──
+             Reemplaza src con el sprite real de Geocentinela -->
+        <div class="sprite-card">
+          <div class="sprite-img-wrap">
+            <img src="https://placehold.co/200x200/0a1208/7fff00?text=GEOCENTINELA"
+                 alt="Sprite de Geocentinela" loading="lazy"/>
+          </div>
+          <div class="sprite-info">
+            <h4>Geocentinela</h4>
+            <!-- Descripción breve del personaje — editar aquí -->
+            <p>Guardián de cristal de las oleadas avanzadas. Sus patrones de disparo son impredecibles.</p>
+            <div class="sprite-tag">OLEADAS 7–9</div>
+          </div>
+        </div>
+
+        <!-- ── PERSONAJE 4: ZAROTH (JEFE FINAL) ──
+             Clase .sprite-boss aplica el borde y brillo rojo especial de jefe.
+             Reemplaza src con el sprite real de Zaroth -->
+        <div class="sprite-card sprite-boss">
+          <div class="sprite-img-wrap">
+            <img src="https://placehold.co/200x200/1a0505/ff4444?text=ZAROTH"
+                 alt="Sprite de Zaroth — Jefe Final" loading="lazy"/>
+          </div>
+          <div class="sprite-info">
+            <!-- El <span class="boss-badge"> añade la etiqueta roja "JEFE" -->
+            <h4>Zaroth <span class="boss-badge">JEFE</span></h4>
+            <!-- Descripción breve del personaje — editar aquí -->
+            <p>El dios oscuro de Khaneri'ah. Solo los más hábiles llegarán a enfrentarle en el nivel 10.</p>
+            <div class="sprite-tag boss-tag">NIVEL 10 — BOSS FINAL</div>
+          </div>
+        </div>
+
+      </div><!-- /sprites-grid -->
+
+    </section><!-- /gallery -->
+
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN: DESCARGA (DOWNLOAD CTA)
+         Solo botón para PC.
+         IMPORTANTE: Cambia el href="#" del botón .btn-primary
+         por el enlace real de descarga cuando esté disponible.
+    ══════════════════════════════════════ -->
+    <section id="download" class="download-section">
+
+      <!-- Fondo decorativo (imagen de superficie del planeta, opacidad baja) -->
+      <div class="download-bg"></div>
+
+      <div class="download-content reveal">
+
+        <p class="hero-eyebrow">— DISPONIBLE AHORA —</p>
+        <h2>¿Listo para <span class="gradient-text">sobrevivir</span>?</h2>
+        <p>Descarga gratuita para PC. Sin anuncios. Sin micropagos.</p>
+
+        <div class="download-buttons">
+          <!-- BOTÓN DE DESCARGA PARA PC
+               ╔═══════════════════════════════════╗
+               ║  Cambia el href="#" por tu enlace ║
+               ╚═══════════════════════════════════╝ -->
+          <a href="#" class="btn btn-primary pulse-btn">⬇ Descargar para PC</a>
+        </div>
+
+        <!-- Nota de versión — actualiza el número de versión en cada parche -->
+        <p class="version-note">v0.9.1 BETA · Early Access · Gratuito</p>
+
+      </div>
+
+    </section><!-- /download -->
+
+  </main>
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER — Pie de página
+  ══════════════════════════════════════ -->
+  <footer id="footer">
+    <div class="footer-inner">
+
+      <!-- COLUMNA 1: MARCA Y REDES SOCIALES
+           Añade los href reales de cada red social -->
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-bracket">[</span>KHANERI'AH<span class="logo-bracket">]</span>
+        </div>
+        <p>Un bullet hell construido con pasión indie.<br/>Hecho con ♥ y demasiado café.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter/X"  class="social-btn">𝕏</a>
+          <a href="#" aria-label="Discord"    class="social-btn">◈</a>
+          <a href="#" aria-label="YouTube"    class="social-btn">▶</a>
+          <a href="#" aria-label="GitHub"     class="social-btn">⌥</a>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: ENLACES DEL JUEGO -->
+      <div class="footer-links">
+        <h4>Juego</h4>
+        <ul>
+          <li><a href="#features">Características</a></li>
+          <li><a href="#gallery">Capturas</a></li>
+          <li><a href="#download">Descargar</a></li>
+          <!-- Enlace a página externa de notas de parche — añade href cuando exista -->
+          <li><a href="#">Notas del Parche</a></li>
+        </ul>
+      </div>
+
+      <!-- COLUMNA 3: ENLACES DE COMUNIDAD
+           Añade los href reales cuando las páginas existan -->
+      <div class="footer-links">
+        <h4>Comunidad</h4>
+        <ul>
+          <li><a href="#">Discord</a></li>
+          <li><a href="#">Bug Report</a></li>
+          <li><a href="#">Fan Art</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- COLUMNA 4: NEWSLETTER
+           La validación y el feedback visual del formulario están en script.js (sección 6) -->
+      <div class="footer-newsletter">
+        <h4>Boletín de Noticias</h4>
+        <p>Recibe actualizaciones y acceso anticipado.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="tu@email.com" aria-label="Introduce tu email"/>
+          <button type="button" class="btn-subscribe" aria-label="Suscribirse">→</button>
+        </div>
+        <p class="newsletter-note">Sin spam. Cancela cuando quieras.</p>
+      </div>
+
+    </div><!-- /footer-inner -->
+
+    <!-- COPYRIGHT Y LINKS LEGALES
+         Actualiza el año si es necesario -->
+    <div class="footer-bottom">
+      <p>© 2026 Khaneri'ah. Todos los derechos reservados.</p>
+      <div class="footer-legal">
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+
+  </footer>
+
+
+  <!-- SCRIPT PRINCIPAL (siempre al final del body) -->
+  <script src="script.js"></script>
+
 </body>
 </html>
